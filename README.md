@@ -26,31 +26,52 @@ Keep your vehicle’s full story at your fingertips. ServiceTrack is a full-stac
 ## 📁 ServiceTrack Folder Structure
 ```
 ServiceTrack/
-├── frontend/                  # Frontend files
-│   ├── index.html             # Main HTML file
-│   ├── css/                   # CSS folder
-│   │   └── styles.css
-│   └── js/                    # JavaScript folder
-│       └── app.js
-├── backend/                   # Backend files (Java Spring Boot)
+├── frontend/                     
+│   ├── public/                   
+│   │   ├── index.html            
+│   │   └── favicon.ico           
+│   ├── src/                      
+│   │   ├── components/           
+│   │   │   ├── Button.js
+│   │   │   ├── VinCard.js
+│   │   │   └── Navbar.js
+│   │   ├── pages/                
+│   │   │   ├── LoginPage.js
+│   │   │   ├── RegisterPage.js
+│   │   │   ├── GaragePage.js
+│   │   │   ├── AddVinPage.js
+│   │   │   └── VinDetailPage.js
+│   │   ├── services/             
+│   │   │   └── api.js            
+│   │   ├── App.js                
+│   │   └── index.js              
+│   └── package.json              
+│
+├── backend/                      
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/
-│   │   │   │   └── com/servicetrack/
-│   │   │   │       ├── controllers/
-│   │   │   │       ├── models/
-│   │   │   │       └── services/
+│   │   │   │   └── com/yourapp/
+│   │   │   │       ├── controllers/    
+│   │   │   │       ├── models/         
+│   │   │   │       ├── services/       
+│   │   │   │       └── repositories/   
 │   │   │   └── resources/
-│   │   │       ├── application.properties
-│   │   │       └── schema.sql
-│   │   └── test/
-│   │       └── java/
-├── database/
-│   └── mysql/
-│       ├── schema.sql         # Database schema
-│       └── seed.sql           # Sample data / seeds
-├── README.md                  # Project documentation
-└── .gitignore                 # Git ignore file
+│   │   │       └── application.properties  
+│   │   └── test/           
+│   └── pom.xml             
+│
+├── database/                     
+│   ├── schema.sql                
+│   ├── seed.sql                  
+│   └── migrations/               
+│
+├── docs/                         # Project documentation
+│   └── README.md
+└── .gitignore                     # Git ignore file
+
+
+                
 ```
 ---
 ### 🧑‍💻 Contributing
