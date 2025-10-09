@@ -29,7 +29,7 @@ ServiceTrack/
 ├── frontend/                     
 │   ├── public/                   
 │   │   ├── index.html            
-│   │   └── favicon.ico           
+│   │   └── icon.jpg           
 │   ├── src/                      
 │   │   ├── components/           
 │   │   │   ├── Button.js
