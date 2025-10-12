@@ -25,50 +25,58 @@ Keep your vehicle’s full story at your fingertips. ServiceTrack is a full-stac
 
 ### 📁 ServiceTrack Folder Structure
 ```
-ServiceTrack/
-├── frontend/                     
-│   ├── public/                   
-│   │   ├── index.html            
-│   │   └── icon.jpg           
-│   ├── src/                      
-│   │   ├── components/           
+ServiceTrack-app/
+│
+├── frontend/                       # React app
+│   ├── public/
+│   ├── src/
+│   │   ├── components/             # React UI components
 │   │   │   ├── Button.js
 │   │   │   ├── VinCard.js
 │   │   │   └── Navbar.js
-│   │   ├── pages/                
+│   │   ├── pages/                  # Page components (routes)
 │   │   │   ├── LoginPage.js
 │   │   │   ├── RegisterPage.js
 │   │   │   ├── GaragePage.js
 │   │   │   ├── AddVinPage.js
 │   │   │   └── VinDetailPage.js
-│   │   ├── services/             
-│   │   │   └── api.js            
-│   │   ├── App.js                
-│   │   └── index.js              
-│   └── package.json              
+│   │   ├── services/                # API calls (Axios or fetch)
+│   │   ├── context/                 # Global state
+│   │   ├── App.js
+│   │   └── index.js
+│   └── package.json
 │
-├── backend/                      
+├── backend-node/                   # Node.js backend
+│   ├── src/
+│   │   ├── controllers/            # Route logic
+│   │   ├── routes/                 # Express route definitions
+│   │   ├── models/                 # Database models (Sequelize/TypeORM)
+│   │   ├── utils/                  # Helper functions
+│   │   ├── app.js                  # Express setup
+│   │   └── server.js
+│   └── package.json
+│
+├── backend-java/                  # Java backend (Spring Boot)
 │   ├── src/
 │   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── com/yourapp/
-│   │   │   │       ├── controllers/    
-│   │   │   │       ├── models/         
-│   │   │   │       ├── services/       
-│   │   │   │       └── repositories/   
+│   │   │   ├── java/com/myapp/
+│   │   │   │   ├── controllers/   # REST API controllers
+│   │   │   │   ├── services/      # Business logic
+│   │   │   │   ├── repositories/  # Database interactions (JPA/Hibernate)
+│   │   │   │   └── models/        # Entity classes
 │   │   │   └── resources/
-│   │   │       └── application.properties  
-│   │   └── test/           
-│   └── pom.xml             
+│   │   │       └── application.properties
+│   │   └── test/
+│   └── pom.xml
 │
-├── database/                     
-│   ├── serviceTrack.sql                
-│   ├── seed.sql                  
-│   └── migrations/               
+├── database/                      # SQL scripts & migrations
+│   ├── schema.sql
+│   └── seed.sql
 │
 ├── docs/                         # Project documentation
 │   └── README.md
 └── .gitignore                     # Git ignore file
+
                 
 ```
 ---
