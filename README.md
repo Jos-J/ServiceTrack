@@ -27,57 +27,38 @@ Keep your vehicle’s full story at your fingertips. ServiceTrack is a full-stac
 ```
 ServiceTrack-app/
 │
-├── frontend/                       # React app
-│   ├── public/
+├── backend/
 │   ├── src/
-│   │   ├── components/             # React UI components
-│   │   │   ├── Button.js
-│   │   │   ├── VinCard.js
-│   │   │   └── Navbar.js
-│   │   ├── pages/                  # Page components (routes)
-│   │   │   ├── LoginPage.js
-│   │   │   ├── RegisterPage.js
-│   │   │   ├── GaragePage.js
-│   │   │   ├── AddVinPage.js
-│   │   │   └── VinDetailPage.js
-│   │   ├── services/                # API calls (Axios or fetch)
-│   │   ├── context/                 # Global state
-│   │   ├── App.js
-│   │   └── index.js
-│   └── package.json
+│   │   ├── index.ts
+│   │   ├── routes/
+│   │   ├── controllers/
+│   │   ├── prisma/
+│   │   └── middlewares/
+│   ├── prisma/
+│   │   └── schema.prisma
+│   ├── tsconfig.json
+│   ├── package.json
+│   └── .env
 │
-├── backend-node/                   # Node.js backend
-│   ├── src/
-│   │   ├── controllers/            # Route logic
-│   │   ├── routes/                 # Express route definitions
-│   │   ├── models/                 # Database models (Sequelize/TypeORM)
-│   │   ├── utils/                  # Helper functions
-│   │   ├── app.js                  # Express setup
-│   │   └── server.js
-│   └── package.json
-│
-├── backend-java/                  # Java backend (Spring Boot)
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/myapp/
-│   │   │   │   ├── controllers/   # REST API controllers
-│   │   │   │   ├── services/      # Business logic
-│   │   │   │   ├── repositories/  # Database interactions (JPA/Hibernate)
-│   │   │   │   └── models/        # Entity classes
-│   │   │   └── resources/
-│   │   │       └── application.properties
-│   │   └── test/
-│   └── pom.xml
-│
-├── database/                      # SQL scripts & migrations
-│   ├── schema.sql
-│   └── seed.sql
-│
-├── docs/                         # Project documentation
-│   └── README.md
-└── .gitignore                     # Git ignore file
-
-                
+└── frontend/
+    ├── src/
+    │   ├── components/
+    │   │   ├── Button.tsx
+    │   │   ├── VinCard.tsx
+    │   │   └── Navbar.tsx
+    │   ├── pages/
+    │   │   ├── LoginPage.tsx
+    │   │   ├── RegisterPage.tsx
+    │   │   ├── GaragePage.tsx
+    │   │   ├── AddVinPage.tsx
+    │   │   └── VinDetailPage.tsx
+    │   ├── hooks/
+    │   │   └── useAuth.ts
+    │   ├── App.tsx
+    │   └── main.tsx
+    ├── tsconfig.json
+    ├── package.json
+    └── .env            
 ```
 ---
 ### 🧑‍💻 Contact us 
