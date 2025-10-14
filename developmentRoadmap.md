@@ -5,7 +5,7 @@
 
 ## 1. Project Setup
 
-* [ ] Repo created (local + remote)
+* [x] Repo created (local + remote)
 * [ ] `backend/` and `frontend/` folders with basic `package.json`
 * [ ] Root README with project description & architecture
 * [ ] Branching strategy noted (main/dev/feature)
