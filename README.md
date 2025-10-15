@@ -25,8 +25,9 @@ Keep your vehicle’s full story at your fingertips. ServiceTrack is a full-stac
 
 ### 📁 ServiceTrack Folder Structure
 ```
-ServiceTrack-app/
-│
+ServiceTrack/
+├── .gitignore
+├── README.md
 ├── backend/
 │   ├── src/
 │   │   ├── index.ts
@@ -39,9 +40,11 @@ ServiceTrack-app/
 │   ├── tsconfig.json
 │   ├── package.json
 │   └── .env
-│
 └── frontend/
     ├── src/
+    │   ├── assets/          # images, icons, etc.
+    │   │   ├── logo.png
+    │   │   └── background.jpg
     │   ├── components/
     │   │   ├── Button.tsx
     │   │   ├── VinCard.tsx
@@ -58,8 +61,13 @@ ServiceTrack-app/
     │   └── main.tsx
     ├── tsconfig.json
     ├── package.json
-    └── .env            
+    └── .env
 ```
+### 🎞️ Project Architecture
+
+![App-architecture](./docs/images/Fullstack-arch.png)
+
+
 ---
 ### 🧑‍💻 Contact us 
 Have suggestions or feedback, let us know. Feel free to reach out: 

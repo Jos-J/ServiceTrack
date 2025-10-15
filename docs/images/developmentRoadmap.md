@@ -6,9 +6,9 @@
 ## 1. Project Setup
 
 * [x] Repo created (local + remote)
-* [ ] `backend/` and `frontend/` folders with basic `package.json`
-* [ ] Root README with project description & architecture
-* [ ] Branching strategy noted (main/dev/feature)
+* [x] `backend/` and `frontend/` folders with basic `package.json`
+* [x] Root README with project description & architecture
+* [x] Branching strategy noted (main/dev/feature)
 
 ## 2. Tooling & TypeScript
 

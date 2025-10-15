@@ -1,0 +1,36 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Environment files
+.env
+**/.env
+
+# Build outputs
+dist/
+build/
+**/dist/
+**/build/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Frontend specific
+frontend/src/assets/*.png
+frontend/src/assets/*.jpg
+# (optional: ignore other large image files if you don't want them in git)
+
+# Backend specific
+backend/prisma/migrations/
+backend/prisma/dev.db
