@@ -12,7 +12,7 @@
 
 ## 2. Tooling & TypeScript
 
-* [x] TypeScript configs (`tsconfig.json`) in backend & frontend
+* [ ] TypeScript configs (`tsconfig.json`) in backend & frontend
 * [ ] ESLint + Prettier configured
 * [ ] Basic npm scripts: build, dev, lint, format
 * [ ] Husky / lint-staged pre-commit hooks (optional)
