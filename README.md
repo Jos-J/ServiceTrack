@@ -28,7 +28,7 @@ Keep your vehicle’s full story at your fingertips. ServiceTrack is a full-stac
 ServiceTrack/
 ├── .gitignore
 ├── README.md
-├── backend/
+├── server/
 │   ├── src/
 │   │   ├── index.ts
 │   │   ├── routes/
@@ -40,7 +40,7 @@ ServiceTrack/
 │   ├── tsconfig.json
 │   ├── package.json
 │   └── .env
-└── frontend/
+└── client/
     ├── src/
     │   ├── assets/          # images, icons, etc.
     │   │   ├── logo.png
