@@ -1,6 +1,3 @@
-
----
-
 # ServiceTrack App - Development Checklist
 
 ## 1. Project Setup
@@ -19,9 +16,9 @@
 
 ## 3. Database Schema (MVP)
 
-* [ ] Tables: Users, Vehicles, Maintenance, ServiceTypes, PartsInventory
-* [ ] ER diagram or markdown table of models, keys, relations
-* [ ] Unique constraints & foreign keys defined
+* [x] Tables: Users, Vehicles, Maintenance, ServiceTypes, PartsInventory
+* [x] ER diagram or markdown table of models, keys, relations
+* [x] Unique constraints & foreign keys defined
 
 ## 4. Prisma Schema & DB Connection
 
