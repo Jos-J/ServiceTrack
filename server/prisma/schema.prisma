@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -12,4 +6,166 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model auto {
+  vin_id             Int                  @id @default(autoincrement())
+  vin                String               @unique @db.Char(17)
+  make               String               @db.VarChar(50)
+  model              String               @db.VarChar(50)
+  vehicle_year       Int
+  miles              Int
+  owner_id           Int
+  created_at         DateTime?            @default(now()) @db.Timestamp(6)
+  updated_at         DateTime?            @default(now()) @db.Timestamp(6)
+  users              users                @relation(fields: [owner_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  vehicle_history    vehicle_history[]
+  vehiclemaintenance vehiclemaintenance[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model parts {
+  part_id             Int                 @id @default(autoincrement())
+  maintenance_id      Int?
+  part_name           String?             @db.VarChar(100)
+  part_number         String?             @db.VarChar(50)
+  part_type           String?             @db.VarChar(50)
+  brand               String?             @db.VarChar(50)
+  quantity            Int?
+  unit_cost           Decimal?            @db.Decimal(10, 2)
+  total_cost          Decimal?            @default(dbgenerated("((quantity)::numeric * unit_cost)")) @db.Decimal(10, 2)
+  supplier_name       String?             @db.VarChar(100)
+  purchase_date       DateTime?           @db.Date
+  under_warranty      Boolean
+  warranty_expiration DateTime?           @db.Date
+  created_by          String              @db.VarChar(100)
+  created_date        DateTime?           @default(now()) @db.Timestamp(6)
+  updated_date        DateTime?           @default(now()) @db.Timestamp(6)
+  notes               String?
+  vehiclemaintenance  vehiclemaintenance? @relation(fields: [maintenance_id], references: [maintenance_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model service_logs {
+  log_id             Int                @id @default(autoincrement())
+  maintenance_id     Int
+  log_date           DateTime?          @default(dbgenerated("CURRENT_DATE")) @db.Date
+  notes              String?
+  user_id            Int?
+  vehiclemaintenance vehiclemaintenance @relation(fields: [maintenance_id], references: [maintenance_id], onDelete: Cascade, onUpdate: NoAction)
+  users              users?             @relation(fields: [user_id], references: [user_id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model servicetype {
+  servicetype_id      Int                  @id @default(autoincrement())
+  servicename         String               @db.VarChar(150)
+  servicecategory     String               @db.VarChar(50)
+  description         String?
+  intervalmiles       Int?
+  intervalmonths      Int?
+  estimatedlaborhours Decimal?             @db.Decimal(10, 2)
+  standardpartscost   Decimal?             @db.Decimal(10, 2)
+  isactive            Boolean
+  createddate         DateTime?            @default(now()) @db.Timestamp(6)
+  createdby           String               @db.VarChar(100)
+  updateddate         DateTime?            @default(now()) @db.Timestamp(6)
+  vehiclemaintenance  vehiclemaintenance[]
+}
+
+model shops {
+  shop_id            Int                  @id @default(autoincrement())
+  shop_name          String               @unique @db.VarChar(100)
+  phone              String?              @db.VarChar(15)
+  email              String?              @db.VarChar(100)
+  address            String?
+  notes              String?
+  vehiclemaintenance vehiclemaintenance[]
+}
+
+model suppliers {
+  supplier_id   Int     @id @default(autoincrement())
+  supplier_name String  @db.VarChar(100)
+  contact_name  String? @db.VarChar(100)
+  phone         String? @db.VarChar(15)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model technicians {
+  technician_id      Int                  @id @default(autoincrement())
+  user_id            Int                  @unique
+  certification      String               @db.VarChar(50)
+  is_active          Boolean?             @default(true)
+  notes              String?
+  users              users                @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  vehiclemaintenance vehiclemaintenance[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  user_id         Int               @id @default(autoincrement())
+  first_name      String            @db.VarChar(50)
+  last_name       String            @db.VarChar(50)
+  phone_number    String            @db.VarChar(50)
+  email           String            @unique @db.VarChar(50)
+  dob             DateTime?         @db.Date
+  street_address  String?           @db.VarChar(100)
+  city            String?           @db.VarChar(50)
+  state_province  String?           @db.VarChar(50)
+  postal_code     String?           @db.VarChar(20)
+  country         String?           @db.VarChar(50)
+  created_at      DateTime?         @default(now()) @db.Timestamp(6)
+  updated_at      DateTime?         @default(now()) @db.Timestamp(6)
+  mechanic_rating String            @db.VarChar(50)
+  auto            auto[]
+  service_logs    service_logs[]
+  technicians     technicians?
+  vehicle_history vehicle_history[]
+}
+
+model vehicle_history {
+  history_id       Int       @id @default(autoincrement())
+  vehicle_id       Int
+  user_id          Int
+  registered       Boolean?  @default(true)
+  registered_start DateTime? @db.Date
+  registered_end   DateTime? @db.Date
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  auto             auto      @relation(fields: [vehicle_id], references: [vin_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model vehiclemaintenance {
+  maintenance_id  Int            @id @default(autoincrement())
+  vehicle_id      Int
+  vehiclename     String?        @db.VarChar(100)
+  mainttype       String?        @db.VarChar(50)
+  description     String?
+  status          String         @db.VarChar(50)
+  odometerreading Int
+  completeddate   DateTime?      @db.Date
+  servicelocation String?        @db.VarChar(100)
+  downhours       Decimal?       @db.Decimal(5, 2)
+  costlabor       Decimal?       @db.Decimal(10, 2)
+  costpart        Decimal?       @db.Decimal(10, 2)
+  partsused       String?
+  warrantystatus  Boolean
+  notes           String?
+  createdby       String         @db.VarChar(100)
+  createddate     DateTime?      @default(now()) @db.Timestamp(6)
+  updateddate     DateTime?      @default(now()) @db.Timestamp(6)
+  isactive        Boolean
+  servicetype_id  Int?
+  totalcost       Decimal?       @default(0) @db.Decimal(10, 2)
+  technician_type String         @default("Self") @db.VarChar(50)
+  technician_id   Int?
+  shop_id         Int?
+  parts           parts[]
+  service_logs    service_logs[]
+  servicetype     servicetype?   @relation(fields: [servicetype_id], references: [servicetype_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_servicetype")
+  auto            auto           @relation(fields: [vehicle_id], references: [vin_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_vehicle")
+  shops           shops?         @relation(fields: [shop_id], references: [shop_id], onUpdate: NoAction)
+  technicians     technicians?   @relation(fields: [technician_id], references: [technician_id], onUpdate: NoAction)
+
+  @@index([servicetype_id], map: "idx_vehiclemaintenance_servicetype_id")
+  @@index([vehicle_id], map: "idx_vehiclemaintenance_vehicle_id")
 }
