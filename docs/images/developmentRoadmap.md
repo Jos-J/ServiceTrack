@@ -22,9 +22,9 @@
 
 ## 4. Prisma Schema & DB Connection
 
-* [ ] `prisma/schema.prisma` matches planned models
-* [ ] Dev DB exists & connected via `.env`
-* [ ] Seed data plan / script ready
+* [X] `prisma/schema.prisma` matches planned models
+* [X] Dev DB exists & connected via `.env`
+* [X] Seed data plan / script ready
 
 ## 5. API Skeleton & Contracts
 
