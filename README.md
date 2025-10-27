@@ -72,8 +72,8 @@ ServiceTrack/
 ### 🧑‍💻 Contact us 
 Have suggestions or feedback, let us know. Feel free to reach out: 
 
-- **Email**: [Support@email.com ](malto:email@example.com)
-- **Phone**: [123456789](tel:123456789)
+- Email: [Support@email.com ](malto:email@example.com)
+- Phone: [123456789](tel:123456789)
 
 Your feedback is appreciated, thank you for helping us improve. 
 
