@@ -2,23 +2,23 @@
 
 ## 1. Project Setup
 
-* [x] Repo created (local + remote)
-* [x] `backend/` and `frontend/` folders with basic `package.json`
-* [x] Root README with project description & architecture
-* [x] Branching strategy noted (main/dev/feature)
+* [X] Repo created (local + remote)
+* [X] `backend/` and `frontend/` folders with basic `package.json`
+* [X] Root README with project description & architecture
+* [X] Branching strategy noted (main/dev/feature)
 
 ## 2. Tooling & TypeScript
 
-* [x] TypeScript configs (`tsconfig.json`) in backend & frontend
-* [x] ESLint + Prettier configured
-* [x] Basic npm scripts: build, dev, lint, format
+* [X] TypeScript configs (`tsconfig.json`) in backend & frontend
+* [X] ESLint + Prettier configured
+* [X] Basic npm scripts: build, dev, lint, format
 * [ ] Husky / lint-staged pre-commit hooks (optional)
 
 ## 3. Database Schema (MVP)
 
-* [x] Tables: Users, Vehicles, Maintenance, ServiceTypes, PartsInventory
-* [x] ER diagram or markdown table of models, keys, relations
-* [x] Unique constraints & foreign keys defined
+* [X] Tables: Users, Vehicles, Maintenance, ServiceTypes, PartsInventory
+* [X] ER diagram or markdown table of models, keys, relations
+* [X] Unique constraints & foreign keys defined
 
 ## 4. Prisma Schema & DB Connection
 
@@ -107,5 +107,3 @@
 * [ ] Basic functional React UI
 
 ---
-
-
