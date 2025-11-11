@@ -1,0 +1,12 @@
+type auto {
+    Vin_id: ID!
+    vin: String!
+    make: String!
+    model: String!
+    vehicle_year: Int!
+    miles: Int!
+    owner_id: Int!
+    user_id: [user_id!]!
+    vehicle_history: [vehicle_history!]!
+    vehiclemaintenance: [vehiclemaintenance!]!
+}
