@@ -15,5 +15,9 @@
 
 # Mutations
 mutation {
-    
+    createAuto(vin: make:) {
+        vid_id
+        make
+        model
+    }
 }
