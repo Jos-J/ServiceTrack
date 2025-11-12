@@ -3,7 +3,6 @@
 ### 🌟 About ServiceTrack
 
 
-* [ ] 
 
 ---
 
@@ -68,11 +67,6 @@ ServiceTrack/
     ├── package.json
     └── .env
 ```
-
-### 🎞️ Project Architecture
-
-![App-architecture](./docs/images/Fullstack-arch.png)
-
 ---
 
 ### 🧑‍💻 Contact us
