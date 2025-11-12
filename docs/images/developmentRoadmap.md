@@ -28,18 +28,26 @@
 
 ## 5. API Skeleton & Contracts
 
-* [ ] GraphQL Schema Defined
-* [ ] Queries and Mutations Documentated
-* [ ] TypeScript interfaces created (`types/graphql.ts`)
+* [ ] REST Endpoints Defined
+  - Define routes such as `/api/vehicles`, `/api/maintenance`, and `/api/users`.
+  - Specify supported methods (`GET`, `POST`, `PUT`, `DELETE`) for each route.
 
-## 6. Backend CRUD (Core MVP with GraphQL)
+* [ ] Request and Response Contracts Documented
+  - Define input and output shapes for each endpoint.
+  - Include request bodies, query parameters, and response formats.
 
-* [ ] Vehicles – Implement Resolvers
-  - Implement Query.vehicles, Query.vehicle, and Mutation.createVehicle.
+* [ ] TypeScript interfaces created (`types/api.ts`)
+  - Create interfaces for all data models and payloads.
+
+
+## 6. Backend CRUD (Core MVP with REST)
+
+* [ ] Vehicles – Implement Routes & Controllers
+  - Implement `GET /api/vehicles`, `GET /api/vehicles/:id`, and `POST /api/vehicles`.
   - Use Prisma client types for type safety (no any).
 
-* [ ] Maintenance Records – Extend Resolvers
-  - Implement Mutation.createMaintenance and any queries needed for maintenance records.
+* [ ] Maintenance Records – Extend Controllers
+  - Implement `GET /api/maintenance` and `POST /api/maintenance`.
   - Reuse Prisma types for strong TypeScript typing.
 
 * [ ] Prisma Client Types Used (no any)
@@ -47,6 +55,7 @@
 
 * [ ] Health Check Endpoint
   - Implement a simple Express route to verify the server is running.
+
 
 
 ## 7. Frontend Skeleton & Routing
