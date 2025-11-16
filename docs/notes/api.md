@@ -1,7 +1,5 @@
 # REST Endpoints Defined
 
-# Service Track REST Endpoints
-
 ### Auto
 - `GET /autos` – List all autos
 - `POST /autos` – Create a new auto
