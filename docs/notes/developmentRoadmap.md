@@ -28,8 +28,8 @@
 
 ## 5. API Skeleton & Contracts
 
-* [ ] REST Endpoints Defined
-  - Define routes such as `/api/vehicles`, `/api/maintenance`, and `/api/users`.
+* [x] REST Endpoints Defined
+  - Define routes such as `/api/autos`, `/api/maintenance`, and `/api/users`.
   - Specify supported methods (`GET`, `POST`, `PUT`, `DELETE`) for each route.
 
 * [ ] Request and Response Contracts Documented

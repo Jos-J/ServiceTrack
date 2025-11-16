@@ -34,3 +34,4 @@ frontend/src/assets/*.jpg
 # Backend specific
 backend/prisma/migrations/
 backend/prisma/dev.db
+
