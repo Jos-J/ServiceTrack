@@ -16,7 +16,7 @@
 
 ## 3. Database Schema (MVP)
 
-* [X] Tables: Users, Vehicles, Maintenance, ServiceTypes, PartsInventory
+* [X] [Tables: Users, Vehicles, Maintenance, ServiceTypes, PartsInventory](/docs/images/visual%20diagram%20of%20tables.png)
 * [X] ER diagram or markdown table of models, keys, relations
 * [X] Unique constraints & foreign keys defined
 
@@ -28,22 +28,22 @@
 
 ## 5. API Skeleton & Contracts
 
-* [x] REST Endpoints Defined
+* [x] [REST Endpoints Defined](/docs/notes/api.md)
   - Define routes such as `/api/autos`, `/api/maintenance`, and `/api/users`.
   - Specify supported methods (`GET`, `POST`, `PUT`, `DELETE`) for each route.
 
-* [ ] Request and Response Contracts Documented
+* [x] [Request and Response Contracts Documented](/docs/notes/resquest&Response.md)
   - Define input and output shapes for each endpoint.
   - Include request bodies, query parameters, and response formats.
 
-* [ ] TypeScript interfaces created (`types/api.ts`)
+* [x] [TypeScript interfaces created](/docs/notes/typescriptInterfaces.md) (`types/api.ts`)
   - Create interfaces for all data models and payloads.
 
-
+ 
 ## 6. Backend CRUD (Core MVP with REST)
 
 * [ ] Vehicles – Implement Routes & Controllers
-  - Implement `GET /api/vehicles`, `GET /api/vehicles/:id`, and `POST /api/vehicles`.
+  - Implement `GET /api/auto`, `GET /api/auto/:id`, and `POST /api/auto`.
   - Use Prisma client types for type safety (no any).
 
 * [ ] Maintenance Records – Extend Controllers

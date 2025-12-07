@@ -1,8 +1,8 @@
-### AUTOS
--   Endpoint: `/autos`
--   Methods: `Get, Post, Put /autos/{id}, DELETE /autos/{id}`
+### 1 AUTO
+-   Endpoint: `/auto`
+-   Methods: `Get, Post, Put /auto/{id}, DELETE /auto/{id}`
 #### Request
--   `POST /autos`
+-   POST `/auto`
 ```{
   "vin": "1HGCM82633A123456",
   "make": "Honda",
@@ -12,14 +12,14 @@
   "owner_id": 3
 }
 ```
--   `PUT /autos{id}`
+-   PUT `/auto/{id}`
  ```
  {
   "miles": 43000
 }
 ```
 #### Response
-- `GET /autos`
+- GET `/auto`
  ```
   {
   "data": [
@@ -36,11 +36,11 @@
   ]
 }
 ```
-### VEHICLE MAINTENANCE
-- Endpoint: `/vehicle-maintenance`
-- Methods: `GET, POST, PUT /vehicle-maintenance/{id}, DELETE /vehicle-maintencance/{id}`
+### 2 VEHICLE MAINTENANCE
+- Endpoint: `/maintenance`
+- Methods: `GET, POST, PUT /maintenance/{id}, DELETE /maintencance/{id}`
 #### Request
-- `POST /vehicle-maintenance`
+- POST `/maintenance`
 ```
 {
   "vehicle_id": 1,
@@ -57,7 +57,7 @@
   "shop_id": 1
 }
 ```
-- ` PUT /vehicle-maintenance/{id}`
+- PUT `/maintenance/{id}`
 ```
 {
   "status": "Completed",
@@ -65,7 +65,7 @@
 }
 ```
 #### Response
-- `GET /vehcile-maintenance`
+- GET `/maintenance`
 ```
 {
   "data": [
@@ -85,11 +85,11 @@
   ]
 }
 ```
-### PARTS
-- ` Endpoint: /parts `
-- ` Method: GET, POST, PUT /part/{id}, DELETE /parts/{id} `
+### 3 PARTS
+- Endpoint: `/parts `
+- Method: `GET, POST, PUT /part/{id}, DELETE /parts/{id} `
 #### Request
-- ` POST /parts `
+-  POST `/parts `
 ```
 {
   "maintenance_id": 1,
@@ -100,7 +100,7 @@
 }
 ```
 #### Response
-- `GET /parts `
+- GET `/parts`
 ```
 {
   "data": [
@@ -117,5 +117,202 @@
   ]
 }
 ```
-
-
+### 4 SERVICE LOGS
+- Endpoint: `/service-logs`
+- Methods: `Get, POST, PUT /service-logs/{id}, DELETE /service-logs/{id}`
+#### Request
+- POST `/service-logs`
+```
+{
+  "maintenance_id": 1,
+  "notes": "Changed oil and filter",
+  "user_id": 5
+}
+```
+- PUT `/service-logs{id}`
+```
+{
+  "notes": "Added tire rotation"
+}
+```
+#### Response
+- GET `/service-logs`
+```
+{
+  "data": [
+    {
+      "log_id": 1,
+      "maintenance_id": 1,
+      "notes": "Changed oil and filter",
+      "user_id": 5,
+      "users": { "user_id": 5, "first_name": "Alice", "last_name": "Smith" }
+    }
+  ]
+}
+```
+### 5 SERVICE TYPE
+- Endpoint: `/servicetype`
+- Method: `GET, POST`
+#### Request
+- POST `/servicetype`
+```
+{
+  "servicename": "Oil Change",
+  "servicecategory": "Maintenance",
+  "description": "Replace engine oil and filter",
+  "isactive": true
+}
+```
+#### Response
+- GET `/servicetype`
+```
+{
+  "data": [
+    {
+      "servicetype_id": 1,
+      "servicename": "Oil Change",
+      "servicecategory": "Maintenance",
+      "description": "Replace engine oil and filter",
+      "isactive": true
+    }
+  ]
+}
+```
+### 6 SHOPS
+- Endpoint: `/shops`
+- Methods: `GET, POST`
+#### Request
+- POST `/shops`
+```
+{
+  "shop_name": "Downtown Garage",
+  "phone": "555-1234",
+  "email": "contact@downtowngarage.com",
+  "address": "123 Main St"
+}
+```
+#### Response
+-  GET `/shops`
+```
+{
+  "data": [
+    {
+      "shop_id": 1,
+      "shop_name": "Downtown Garage",
+      "phone": "555-1234",
+      "email": "contact@downtowngarage.com",
+      "address": "123 Main St"
+    }
+  ]
+}
+```
+### 7 suppliers
+- Endpoint: `/suppliers`
+- Methods: `GET, POST `
+#### Request
+- POST `/suppliers`
+```
+{
+  "supplier_name": "Bosch Parts",
+  "contact_name": "John Doe",
+  "phone": "555-5678"
+}
+```
+#### Response
+- GET `/suppliers`
+```
+{
+  "data": [
+    {
+      "supplier_id": 1,
+      "supplier_name": "Bosch Parts",
+      "contact_name": "John Doe",
+      "phone": "555-5678"
+    }
+  ]
+}
+```
+### 8 TECHNICIANS
+- Endpoint: `/technicians`
+-  Methods: `GET, POST `
+#### Request
+- POST `/technicians`
+```
+{
+  "user_id": 5,
+  "certification": "ASE",
+  "is_active": true
+}
+```
+#### Response
+- GET `/techicians`
+```
+{
+  "data": [
+    {
+      "technician_id": 2,
+      "user_id": 5,
+      "certification": "ASE",
+      "is_active": true
+    }
+  ]
+}
+```
+### 9 USERS
+- Endpoint: `/users`
+- Method: `GET, POST`
+#### Request
+- POST `/users`
+```
+{
+  "first_name": "Alice",
+  "last_name": "Smith",
+  "phone_number": "555-0001",
+  "email": "alice@example.com",
+  "mechanic_rating": "Expert"
+}
+```
+#### Response
+- GET `/users`
+```
+{
+  "data": [
+    {
+      "user_id": 5,
+      "first_name": "Alice",
+      "last_name": "Smith",
+      "phone_number": "555-0001",
+      "email": "alice@example.com",
+      "mechanic_rating": "Expert"
+    }
+  ]
+}
+```
+### 10 VEHICLE HISTORY
+- Endpoint: `/vehicle-history`
+- Method: `GET, POST`
+#### Request
+- POST `/vehicle-history`
+```
+{
+  "vehicle_id": 1,
+  "user_id": 5,
+  "registered": true
+}
+```
+#### Response
+- GET `/vehicle-history`
+```
+{
+  "data": [
+    {
+      "history_id": 1,
+      "vehicle_id": 1,
+      "user_id": 5,
+      "registered": true,
+      "auto": { "vin_id": 1, "vin": "1HGCM82633A123456", "make": "Honda", "model": "Civic" },
+      "users": { "user_id": 5, "first_name": "Alice", "last_name": "Smith" }
+    }
+  ]
+}
+```
