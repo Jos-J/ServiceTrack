@@ -1,17 +1,23 @@
 import 'dotenv/config';
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import autosRoute from './routes/auto.routes';
+import maintenanceRoute from './routes/maintenance.routes';
+import healthRoute from './routes/health.routes';
 
 const app = express();
-const prisma = new PrismaClient();
-
 app.use(express.json());
 
-app.get('/users', async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.json(users);
-});
+// ROUTES
+app.use('/api/autos', autosRoute);
+app.use('/api/maintenance', maintenanceRoute);
+app.use('/api/health', healthRoute);
+
+// Existing example
+// app.get('/users', ...
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
+);
+
 

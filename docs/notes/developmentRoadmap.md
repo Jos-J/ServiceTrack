@@ -42,18 +42,18 @@
  
 ## 6. Backend CRUD (Core MVP with REST)
 
-* [ ] Vehicles – Implement Routes & Controllers
+* [x] Vehicles – Implement Routes & Controllers
   - Implement `GET /api/auto`, `GET /api/auto/:id`, and `POST /api/auto`.
   - Use Prisma client types for type safety (no any).
 
-* [ ] Maintenance Records – Extend Controllers
+* [x] Maintenance Records – Extend Controllers
   - Implement `GET /api/maintenance` and `POST /api/maintenance`.
   - Reuse Prisma types for strong TypeScript typing.
 
-* [ ] Prisma Client Types Used (no any)
+* [x] Prisma Client Types Used (no any)
   - Use Prisma-generated types for full TypeScript safety.
 
-* [ ] Health Check Endpoint
+* [x] Health Check Endpoint
   - Implement a simple Express route to verify the server is running.
 
 
