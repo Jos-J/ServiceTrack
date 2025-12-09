@@ -35,3 +35,5 @@ frontend/src/assets/*.jpg
 backend/prisma/migrations/
 backend/prisma/dev.db
 
+# DOCS
+docs/
