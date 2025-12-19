@@ -1,16 +1,33 @@
-import { Request, Response } from 'express';
-import { prisma } from '../prisma';
+// maintenance.controller.ts
+import { prisma } from "../prisma";
+import type {
+  VehicleMaintenanceNested,
+  VehicleMaintenanceCreateRequest,
+  ApiResponse,
+} from "../types/tsInterfaces";
 
-export const getMaintenance = async (req: Request, res: Response) => {
-  const records = await prisma.vehiclemaintenance.findMany();
-  res.json({ data: records });
-};
-
-export const createMaintenance = async (req: Request, res: Response) => {
-  const record = await prisma.vehiclemaintenance.create({
-    data: req.body,
+function normalizeNullsToUndefined<T>(obj: T): T {
+  const copy: any = { ...(obj as any) };
+  Object.keys(copy).forEach((k) => {
+    if (copy[k] === null) copy[k] = undefined;
   });
+  return copy as T;
+}
 
-  res.status(201).json({ data: record });
+export const getMaintenance = async (): Promise<ApiResponse<VehicleMaintenanceNested[]>> => {
+  const maintenance = await prisma.vehiclemaintenance.findMany();
+  const normalized = maintenance.map((m) => normalizeNullsToUndefined(m) as unknown as VehicleMaintenanceNested);
+  return { data: normalized };
 };
+
+export const createMaintenance = async (
+  body: VehicleMaintenanceCreateRequest
+): Promise<ApiResponse<VehicleMaintenanceNested>> => {
+  const maintenance = await prisma.vehiclemaintenance.create({
+    data: body,
+  });
+  const normalized = normalizeNullsToUndefined(maintenance) as unknown as VehicleMaintenanceNested;
+  return { data: normalized };
+};
+
 

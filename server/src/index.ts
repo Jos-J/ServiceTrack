@@ -3,6 +3,8 @@ import express from 'express';
 import autosRoute from './routes/auto.routes';
 import maintenanceRoute from './routes/maintenance.routes';
 import healthRoute from './routes/health.routes';
+export * from "./types/tsInterfaces";
+
 
 const app = express();
 app.use(express.json());
@@ -19,5 +21,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
-
-
