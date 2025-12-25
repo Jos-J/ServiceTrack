@@ -12,7 +12,7 @@ export default function Login() {
 
     // TODO: Add login validation here
     // If login successful, redirect to home
-    navigate("/home");
+    navigate("/Home");
   };
 
   return (

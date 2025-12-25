@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
-import autosRoute from './routes/auto.routes';
+import autosRoute from './routes/auto.route';
 import maintenanceRoute from './routes/maintenance.routes';
-import healthRoute from './routes/health.routes';
+import healthRoute from './routes/health.route';
 export * from "./types/tsInterfaces";
 
 
