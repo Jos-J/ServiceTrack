@@ -4,14 +4,14 @@ import {
   getParts,
   createPart,
   updatePart,
-} from "../controllers/parts.controller";
+} from "../controllers/parts.controller.js";
 import type {
   Part,
   PartCreateRequest,
   PartUpdateRequest,
   PartNested,
   ApiResponse,
-} from "../types/api";
+} from "../types/api.js";
 
 const router = Router();
 

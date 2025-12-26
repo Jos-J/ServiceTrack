@@ -12,7 +12,7 @@ import partsRoute from './routes/parts.route.js';
 // import serviceLogRoute from './routes/serviceLog.route';
 import healthRoute from './routes/health.route.js';
 
-export * from "./types/api";
+export * from "./types/api.js";
 
 const app = express();
 app.use(express.json());

@@ -1,13 +1,13 @@
 // server/src/controllers/parts.controller.ts
-import { prisma } from "../prisma";
-import { normalizeNullsToUndefined } from "../utils/normalize";
+import { prisma } from "../prisma.js";
+import { normalizeNullsToUndefined } from "../utils/normalize.js";
 import type {
   Part,
   PartNested,
   PartCreateRequest,
   PartUpdateRequest,
   ApiResponse,
-} from "../types/api";
+} from "../types/api.js";
 import type { Prisma } from "@prisma/client";
 
 // GET /api/parts

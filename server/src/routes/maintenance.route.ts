@@ -3,13 +3,13 @@ import { Router, type Request, type Response } from "express";
 import {
   getMaintenance,
   createMaintenance,
-} from "../controllers/maintenance.controller";
+} from "../controllers/maintenance.controller.js";
 import type {
   VehicleMaintenanceCreateRequest,
   VehicleMaintenanceResponse,
   VehicleMaintenanceNested,
   ApiResponse,
-} from "../types/api";
+} from "../types/api.js";
 
 const router = Router();
 

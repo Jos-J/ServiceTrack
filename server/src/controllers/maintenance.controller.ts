@@ -1,10 +1,10 @@
 // maintenance.controller.ts
-import { prisma } from "../prisma";
+import { prisma } from "../prisma.js";
 import type {
   VehicleMaintenanceNested,
   VehicleMaintenanceCreateRequest,
   ApiResponse,
-} from "../types/api";
+} from "../types/api.js";
 
 function normalizeNullsToUndefined<T>(obj: T): T {
   const copy: any = { ...(obj as any) };

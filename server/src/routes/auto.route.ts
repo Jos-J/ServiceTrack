@@ -4,12 +4,12 @@ import {
   getAutos,
   getAutoById,
   createAuto,
-} from "../controllers/auto.controller";
+} from "../controllers/auto.controller.js";
 import type {
   Auto,
   AutoCreateRequest,
   ApiResponse,
-} from "../types/api";
+} from "../types/api.js";
 
 const router = Router();
 
