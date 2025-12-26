@@ -1,6 +1,4 @@
 // client/src/types/tsInterfaces.ts
-import type { Decimal } from "@prisma/client/runtime/library";
-
 
 export interface ApiResponse<T> {
   data: T;
@@ -112,8 +110,8 @@ export interface Part {
   part_type?: string;
   brand?: string;
   quantity?: number;
-  unit_cost?: Decimal;
-  total_cost?: Decimal;
+  unit_cost?: number;
+  total_cost?: number;
   supplier_name?: string;
   purchase_date?: string;
   under_warranty: boolean;

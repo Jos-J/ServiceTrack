@@ -1,6 +1,7 @@
 // server/src/index.ts
 import 'dotenv/config';
 import express from 'express';
+import cors from "cors";
 
 import autosRoute from './routes/auto.route.js';
 import maintenanceRoute from './routes/maintenance.route.js'
@@ -13,8 +14,15 @@ import partsRoute from './routes/parts.route.js';
 import healthRoute from './routes/health.route.js';
 
 export * from "./types/api.js";
-
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+)
+
 app.use(express.json());
 
 // ROUTES
