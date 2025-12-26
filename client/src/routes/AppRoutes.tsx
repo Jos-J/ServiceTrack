@@ -10,6 +10,8 @@ import Garage from "../pages/Garage";
 import AddVehicle from "../pages/AddVehicle";
 import VehicleDetails from "../pages/VehicleDetails";
 
+import ProtectedRoute from "./ProtectedRoute";
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -21,10 +23,12 @@ export default function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/logout" element={<Logout />} />
 
-      {/* Main app */}
-      <Route path="/garage" element={<Garage />} />
-      <Route path="/add-vehicle" element={<AddVehicle />} />
-      <Route path="/vehicle/:id" element={<VehicleDetails />} />
+      {/* Protected app routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/garage" element={<Garage />} />
+        <Route path="/add-vehicle" element={<AddVehicle />} />
+        <Route path="/vehicle/:id" element={<VehicleDetails />} />
+      </Route>
 
       {/* Back-compat redirects */}
       <Route path="/home" element={<Navigate to="/" replace />} />

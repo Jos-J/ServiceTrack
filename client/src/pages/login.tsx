@@ -1,18 +1,27 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import MyButton from "../components/button";
+import { setToken } from "../auth/auth";
 
 export default function Login() {
-  const navigate = useNavigate(); // for programmatic navigation
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // prevent page reload
+  // Where the user was trying to go before being redirected to login
+  const from = (location.state as any)?.from?.pathname || "/garage";
 
-    // TODO: Add login validation here
-    // If login successful, redirect to home
-    navigate("/Home");
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // 🔐 Fake login (replace later with real API call)
+    const fakeToken = `fake-${Date.now()}`;
+    setToken(fakeToken);
+
+    // Redirect back to intended page
+    navigate(from, { replace: true });
   };
 
   return (
@@ -40,12 +49,10 @@ export default function Login() {
           className="border p-2 rounded"
         />
 
-        {/* Submit button */}
         <MyButton type="submit" label="Login" />
 
-        {/* Link to register for new users */}
         <p className="mt-2 text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link to="/register" className="text-blue-500 underline">
             Register
           </Link>
