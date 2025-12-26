@@ -1,10 +1,18 @@
+// server/src/index.ts
 import 'dotenv/config';
 import express from 'express';
-import autosRoute from './routes/auto.route';
-import maintenanceRoute from './routes/maintenance.routes';
-import healthRoute from './routes/health.route';
-export * from "./types/tsInterfaces";
 
+import autosRoute from './routes/auto.route';
+import maintenanceRoute from './routes/maintenance.routes'
+import partsRoute from './routes/parts.route';
+import vehicleHistoryRoute from './routes/vehiclehistory.route';
+import usersRoute from './routes/users.route';
+import techniciansRoute from './routes/technicians.route';
+import shopRoute from './routes/shop.route';
+import serviceLogRoute from './routes/servicelog.route';
+import healthRoute from './routes/health.route';
+
+export * from "./types/api";
 
 const app = express();
 app.use(express.json());
@@ -12,12 +20,16 @@ app.use(express.json());
 // ROUTES
 app.use('/api/autos', autosRoute);
 app.use('/api/maintenance', maintenanceRoute);
+app.use('/api/parts', partsRoute);
+app.use('/api/vehicle-history', vehicleHistoryRoute);
+app.use('/api/users', usersRoute);
+app.use('/api/technicians', techniciansRoute);
+app.use('/api/shops', shopRoute);
+app.use('/api/service-logs', serviceLogRoute);
 app.use('/api/health', healthRoute);
-
-// Existing example
-// app.get('/users', ...
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
+
