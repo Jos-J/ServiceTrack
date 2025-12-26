@@ -2,15 +2,15 @@
 import 'dotenv/config';
 import express from 'express';
 
-import autosRoute from './routes/auto.route';
-import maintenanceRoute from './routes/maintenance.routes'
-import partsRoute from './routes/parts.route';
+import autosRoute from './routes/auto.route.js';
+import maintenanceRoute from './routes/maintenance.route.js'
+import partsRoute from './routes/parts.route.js';
 // import vehicleHistoryRoute from './routes/vehiclehistory.route';
 // import usersRoute from './routes/users.route';
 // import techniciansRoute from './routes/technicians.route';
 // import shopRoute from './routes/shop.route';
 // import serviceLogRoute from './routes/serviceLog.route';
-import healthRoute from './routes/health.route';
+import healthRoute from './routes/health.route.js';
 
 export * from "./types/api";
 
@@ -32,4 +32,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
-
