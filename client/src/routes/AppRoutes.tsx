@@ -28,11 +28,14 @@ export default function AppRoutes() {
         <Route path="/garage" element={<Garage />} />
         <Route path="/add-vehicle" element={<AddVehicle />} />
         <Route path="/vehicle/:id" element={<VehicleDetails />} />
+        <Route path="/vehicle/:id/add-maintenance" element={<VehicleDetails />} />
       </Route>
 
       {/* Back-compat redirects */}
       <Route path="/home" element={<Navigate to="/" replace />} />
       <Route path="/addVehicle" element={<Navigate to="/add-vehicle" replace />} />
+      
+
 
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
