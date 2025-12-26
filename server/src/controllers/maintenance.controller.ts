@@ -4,7 +4,7 @@ import type {
   VehicleMaintenanceNested,
   VehicleMaintenanceCreateRequest,
   ApiResponse,
-} from "../types/tsInterfaces";
+} from "../types/api";
 
 function normalizeNullsToUndefined<T>(obj: T): T {
   const copy: any = { ...(obj as any) };

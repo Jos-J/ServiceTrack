@@ -7,7 +7,7 @@ import type {
   PartCreateRequest,
   PartUpdateRequest,
   ApiResponse,
-} from "../types/tsInterfaces";
+} from "../types/api";
 import type { Prisma } from "@prisma/client";
 
 // GET /api/parts

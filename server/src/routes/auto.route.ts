@@ -9,7 +9,7 @@ import type {
   Auto,
   AutoCreateRequest,
   ApiResponse,
-} from "../types/tsInterfaces";
+} from "../types/api";
 
 const router = Router();
 

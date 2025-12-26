@@ -9,7 +9,7 @@ import type {
   VehicleMaintenanceResponse,
   VehicleMaintenanceNested,
   ApiResponse,
-} from "../types/tsInterfaces";
+} from "../types/api";
 
 const router = Router();
 

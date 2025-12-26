@@ -11,7 +11,7 @@ import type {
   PartUpdateRequest,
   PartNested,
   ApiResponse,
-} from "../types/tsInterfaces";
+} from "../types/api";
 
 const router = Router();
 

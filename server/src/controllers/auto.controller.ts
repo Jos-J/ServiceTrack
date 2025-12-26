@@ -1,6 +1,6 @@
 // server/src/controllers/auto.controller.ts
 import { prisma } from "../prisma";
-import type { Auto, AutoCreateRequest, ApiResponse } from "../types/tsInterfaces";
+import type { Auto, AutoCreateRequest, ApiResponse } from "../types/api";
 
 // GET /api/autos
 export const getAutos = async (): Promise<ApiResponse<Auto[]>> => {
