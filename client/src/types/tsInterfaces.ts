@@ -1,4 +1,4 @@
-// server/src/types/tsInterfaces.ts
+// client/src/types/tsInterfaces.ts
 import type { Decimal } from "@prisma/client/runtime/library";
 
 

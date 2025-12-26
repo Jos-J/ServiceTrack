@@ -7,8 +7,8 @@ export default function Logout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    clearToken();              // ✅ actually logs out
-    navigate("/", { replace: true }); // ✅ go back to Home
+    clearToken();              //  logs out
+    navigate("/", { replace: true }); // reroutes go back to Home
   }, [navigate]);
 
   return (
