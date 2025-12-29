@@ -2,12 +2,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { fetchAutoById } from "../api/autos.api";
-import { fetchMaintenance, createMaintenance } from "../api/maintenance.api";
+import {
+  fetchMaintenance,
+  createMaintenance,
+  updateMaintenance,
+  deleteMaintenance,
+} from "../api/maintenance.api";
 import { fetchMaintenanceMeta } from "../api/meta.api";
-import type { Auto, VehicleMaintenanceNested, VehicleMaintenanceCreateRequest } from "../types";
+import type {
+  Auto,
+  VehicleMaintenanceNested,
+  VehicleMaintenanceCreateRequest,
+} from "../types";
 import Modal from "../components/Modal";
 import MyButton from "../components/button";
-
 
 export default function VehicleDetails() {
   const params = useParams();
@@ -21,12 +29,12 @@ export default function VehicleDetails() {
   const [maintenance, setMaintenance] = useState<VehicleMaintenanceNested[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   const [meta, setMeta] = useState<{ maintTypes: string[]; statuses: string[] } | null>(null);
 
-
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // modal form state
   const [form, setForm] = useState<VehicleMaintenanceCreateRequest>({
     vehicle_id: vinId,
     status: "runs & drives",
@@ -34,7 +42,6 @@ export default function VehicleDetails() {
     createdby: "demo-user",
     isactive: true,
     warrantystatus: false,
-    // optional fields:
     mainttype: "preventive",
     description: "",
   });
@@ -43,11 +50,22 @@ export default function VehicleDetails() {
   const [formError, setFormError] = useState("");
   const [success, setSuccess] = useState("");
 
-
-  // keep modal state in sync with the route
+  // modal open/close follows route
   useEffect(() => {
     setModalOpen(openFromRoute);
   }, [openFromRoute]);
+
+  // load meta once
+  useEffect(() => {
+    (async () => {
+      try {
+        const metaResult = await fetchMaintenanceMeta();
+        setMeta(metaResult.data);
+      } catch (err) {
+        console.error("Failed to load maintenance meta", err);
+      }
+    })();
+  }, []);
 
   async function loadPage() {
     setError("");
@@ -61,12 +79,13 @@ export default function VehicleDetails() {
     try {
       setLoading(true);
 
-      const [autoResult, maintenanceResult,] = await Promise.all([
+      const [autoResult, maintenanceResult] = await Promise.all([
         fetchAutoById(vinId),
-        fetchMaintenance()
+        fetchMaintenance(),
       ]);
+
       setAuto(autoResult.data);
-      
+
       const filtered = maintenanceResult.data.filter((m) => m.vehicle_id === vinId);
       setMaintenance(filtered);
     } catch (err: any) {
@@ -80,28 +99,18 @@ export default function VehicleDetails() {
       setLoading(false);
     }
   }
-  // load maintenance metadata once
-  useEffect(() => {
-    (async () => {
-      try {
-        const metaResult = await fetchMaintenanceMeta();
-        setMeta(metaResult.data);
-      } catch (err) {
-        console.error("Failed to load maintenance meta", err);
-      }
-    })();
-  }, []);
 
-
+  // load page data when vin changes
   useEffect(() => {
     setForm((prev) => ({ ...prev, vehicle_id: vinId }));
     loadPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vinId]);
 
+  // normalize form values once meta loads
   useEffect(() => {
     if (!meta) return;
-    // update form vehicle_id if vinId changes
+
     setForm((prev) => ({
       ...prev,
       mainttype: meta.maintTypes.includes(prev.mainttype ?? "")
@@ -111,15 +120,18 @@ export default function VehicleDetails() {
         ? prev.status
         : meta.statuses[0],
     }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meta]);
 
   function openModal() {
+    // add mode
+    setEditingId(null);
     setSuccess("");
     setFormError("");
+
     setForm((prev) => ({
       ...prev,
-      mainttype: meta?.maintTypes?.[0]  ?? prev.mainttype,
+      vehicle_id: vinId,
+      mainttype: meta?.maintTypes?.[0] ?? prev.mainttype,
       status: meta?.statuses?.[0] ?? prev.status,
       odometerreading: 0,
       description: "",
@@ -130,44 +142,88 @@ export default function VehicleDetails() {
 
   function closeModal() {
     setFormError("");
-    setForm((prev) => ({
-      ...prev,
-      mainttype: meta?.maintTypes?.[0] ?? prev.mainttype,
-      status: meta?.statuses?.[0] ?? prev.status,
-      odometerreading: prev.odometerreading, // or 0 if you want reset
-      description: "",
-    }));
+    setEditingId(null); // ✅ reset edit mode
     navigate(`/vehicle/${vinId}`);
   }
-
 
   async function handleSaveMaintenance() {
     setFormError("");
 
     if (!form.status) return setFormError("Status is required.");
-    if (form.odometerreading < 0)
-      return setFormError("Odometer reading must be 0 or more.");
+    if (form.odometerreading < 0) return setFormError("Odometer reading must be 0 or more.");
+    if (!meta) return setFormError("Metadata not loaded yet.");
 
     try {
       setSaving(true);
+
+      // ✅ EDIT
+      if (editingId) {
+        const updated = await updateMaintenance(editingId, {
+          mainttype: form.mainttype,
+          status: form.status,
+          odometerreading: form.odometerreading,
+          description: form.description,
+        });
+
+        setMaintenance((prev) =>
+          prev.map((x) => (x.maintenance_id === editingId ? updated.data : x))
+        );
+
+        setSuccess("Maintenance updated.");
+        closeModal();
+        return;
+      }
+
+      // ✅ ADD
       const created = await createMaintenance(form);
-      setSuccess("Maintenance added.");
-
-      // add new record to top (no refetch)
       setMaintenance((prev) => [created.data, ...prev]);
+      setSuccess("Maintenance added.");
       closeModal();
-
     } catch (err: any) {
       const msg =
         err?.response?.data?.message ||
         err?.response?.data?.errors?.join?.(", ") ||
         err?.message ||
-        "Failed to add maintenance";
+        "Failed to save maintenance";
       setFormError(msg);
-      console.error("createMaintenance error:", err);
+      console.error("saveMaintenance error:", err);
     } finally {
       setSaving(false);
     }
+  }
+
+  async function handleDeleteMaintenance(id: number) {
+    if (!confirm("Delete this maintenance entry?")) return;
+
+    const snapshot = maintenance;
+    setMaintenance((prev) => prev.filter((x) => x.maintenance_id !== id));
+
+    try {
+      await deleteMaintenance(id);
+      setSuccess("Maintenance deleted.");
+    } catch (err) {
+      setMaintenance(snapshot); // rollback
+      console.error("deleteMaintenance error:", err);
+      setSuccess("");
+      alert("Delete failed. Restored previous list.");
+    }
+  }
+
+  function startEdit(m: VehicleMaintenanceNested) {
+    setEditingId(m.maintenance_id);
+    setFormError("");
+    setSuccess("");
+
+    setForm((prev) => ({
+      ...prev,
+      vehicle_id: vinId,
+      mainttype: m.mainttype ?? prev.mainttype,
+      status: m.status ?? prev.status,
+      odometerreading: m.odometerreading ?? 0,
+      description: m.description ?? "",
+    }));
+
+    navigate(`/vehicle/${vinId}/add-maintenance`);
   }
 
   if (loading) return <div className="p-4">Loading vehicle…</div>;
@@ -205,13 +261,18 @@ export default function VehicleDetails() {
           <span className="font-medium">VIN:</span> {auto.vin}
         </div>
         <div>
-          <span className="font-medium">Miles:</span>{" "}
-          {auto.miles.toLocaleString()}
+          <span className="font-medium">Miles:</span> {auto.miles.toLocaleString()}
         </div>
         <div>
           <span className="font-medium">Vehicle ID:</span> {auto.vin_id}
         </div>
       </div>
+
+      {success && (
+        <div className="mt-4 rounded border border-green-300 bg-green-50 p-2 text-green-800">
+          {success}
+        </div>
+      )}
 
       <div className="mt-6 bg-white rounded shadow p-4">
         <div className="flex items-center justify-between">
@@ -234,23 +295,39 @@ export default function VehicleDetails() {
                 <div className="font-medium">
                   {m.mainttype ?? "Maintenance"} — {m.status}
                 </div>
+
                 <div className="text-sm text-gray-600">
                   Odometer: {m.odometerreading.toLocaleString()} mi
                 </div>
+
                 {m.description && <div className="mt-1">{m.description}</div>}
+
+                <div className="mt-3 flex gap-2">
+                  <button
+                    className="px-3 py-1 rounded border"
+                    onClick={() => startEdit(m)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="px-3 py-1 rounded border border-red-300 text-red-700"
+                    onClick={() => handleDeleteMaintenance(m.maintenance_id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         )}
       </div>
-      {success && (
-        <div className="mb-3 rounded border border-green-300 bg-green-50 p-2 text-green-800">
-          {success}
-        </div>
-      )}
 
-
-      <Modal open={modalOpen} title="Add Maintenance" onClose={closeModal}>
+      <Modal
+        open={modalOpen}
+        title={editingId ? "Edit Maintenance" : "Add Maintenance"}
+        onClose={closeModal}
+      >
         {formError && (
           <div className="mb-3 rounded border border-red-300 bg-red-50 p-2 text-red-700">
             {formError}
@@ -262,17 +339,14 @@ export default function VehicleDetails() {
             <label className="block font-medium">Type</label>
             <select
               className="w-full border rounded p-2"
-              value={form.mainttype ?? "preventive"}
-              onChange={(e) =>
-                setForm((p) => ({ ...p, mainttype: e.target.value }))
-              }
+              value={form.mainttype ?? ""}
+              onChange={(e) => setForm((p) => ({ ...p, mainttype: e.target.value }))}
             >
               {(meta?.maintTypes ?? []).map((t) => (
                 <option key={t} value={t}>
                   {t.charAt(0).toUpperCase() + t.slice(1)}
                 </option>
               ))}
-
             </select>
           </div>
 
@@ -280,7 +354,7 @@ export default function VehicleDetails() {
             <label className="block font-medium">Status</label>
             <select
               className="w-full border rounded p-2"
-              value={form.status}
+              value={form.status ?? ""}
               onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
             >
               {(meta?.statuses ?? []).map((s) => (
@@ -288,10 +362,8 @@ export default function VehicleDetails() {
                   {s}
                 </option>
               ))}
-
             </select>
           </div>
-
 
           <div>
             <label className="block font-medium">Odometer Reading</label>
@@ -319,8 +391,9 @@ export default function VehicleDetails() {
             <button className="px-3 py-2 rounded border" onClick={closeModal}>
               Cancel
             </button>
+
             <MyButton
-              label={saving ? "Saving..." : "Save"}
+              label={saving ? "Saving..." : editingId ? "Update" : "Save"}
               onClick={handleSaveMaintenance}
               disabled={saving || !meta}
             />
@@ -330,4 +403,3 @@ export default function VehicleDetails() {
     </div>
   );
 }
-

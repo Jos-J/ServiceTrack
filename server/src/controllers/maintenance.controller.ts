@@ -6,6 +6,13 @@ import type {
   ApiResponse,
 } from "../types/api.js";
 
+export type VehicleMaintenanceUpdateRequest = Partial<
+  Pick<
+    VehicleMaintenanceCreateRequest,
+    "mainttype" | "status" | "odometerreading" | "description"
+  >
+>;
+
 function normalizeNullsToUndefined<T>(obj: T): T {
   const copy: any = { ...(obj as any) };
   Object.keys(copy).forEach((k) => {
@@ -30,4 +37,22 @@ export const createMaintenance = async (
   return { data: normalized };
 };
 
+
+// ✅ PATCH /api/maintenance/:id
+export const updateMaintenance = async (
+  id: number,
+  body: VehicleMaintenanceUpdateRequest
+): Promise<ApiResponse<VehicleMaintenanceNested>> => {
+  const updated = await prisma.vehiclemaintenance.update({
+    where: { maintenance_id: id },
+    data: body,
+  });
+  return { data: normalizeNullsToUndefined(updated) as unknown as VehicleMaintenanceNested };
+};
+
+// ✅ DELETE /api/maintenance/:id
+export const deleteMaintenance = async (id: number): Promise<ApiResponse<{ id: number }>> => {
+  await prisma.vehiclemaintenance.delete({ where: { maintenance_id: id } });
+  return { data: { id } };
+};
 
