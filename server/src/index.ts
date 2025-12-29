@@ -2,6 +2,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from "cors";
+import metaRoute from "./routes/meta.route.js";
 
 import autosRoute from './routes/auto.route.js';
 import maintenanceRoute from './routes/maintenance.route.js'
@@ -24,6 +25,7 @@ app.use(
 )
 
 app.use(express.json());
+app.use("/api/meta",metaRoute);
 
 // ROUTES
 app.use('/api/autos', autosRoute);

@@ -1,4 +1,4 @@
-// maintenance.controller.ts
+//server/ src/ controller / maintenance.controller.ts
 import { prisma } from "../prisma.js";
 import type {
   VehicleMaintenanceNested,
