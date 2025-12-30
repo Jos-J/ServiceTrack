@@ -6,7 +6,7 @@ Service Track is a comprehensive vehicle management app designed to keep all you
 ![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue)](https://www.postgresql.org/) 
 ---
-###  Table of Contents
+ <!-- ###  Table of Contents 
 
 - [Features](#features)  
 - [Use Cases](#use-cases)
@@ -17,6 +17,7 @@ Service Track is a comprehensive vehicle management app designed to keep all you
 - [Table Diagram](./docs/images/visual%20diagram%20of%20tables.png)
 - [Contact Us](#contact-us)
 ---
+-->
 
 ###  Features
 
@@ -36,49 +37,6 @@ Service Track is a comprehensive vehicle management app designed to keep all you
 - Track unknown modifications or aftermarket changes.
 - Maintain fleet or project car histories.
 
----
-
-### Folder Structure
-
-```
-ServiceTrack/
-├── .gitignore
-├── README.md
-├── server/
-│   ├── src/
-│   │   ├── index.ts
-│   │   ├── routes/
-│   │   ├── controllers/
-│   │   ├── prisma/
-│   │   └── middlewares/
-│   ├── prisma/
-│   │   └── schema.prisma
-│   ├── tsconfig.json
-│   ├── package.json
-│   └── .env
-└── client/
-    ├── src/
-    │   ├── assets/          # images, icons, etc.
-    │   │   ├── logo.png
-    │   │   └── background.jpg
-    │   ├── components/
-    │   │   ├── Button.tsx
-    │   │   ├── VinCard.tsx
-    │   │   └── Navbar.tsx
-    │   ├── pages/
-    │   │   ├── LoginPage.tsx
-    │   │   ├── RegisterPage.tsx
-    │   │   ├── GaragePage.tsx
-    │   │   ├── AddVinPage.tsx
-    │   │   └── VinDetailPage.tsx
-    │   ├── hooks/
-    │   │   └── useAuth.ts
-    │   ├── App.tsx
-    │   └── main.tsx
-    ├── tsconfig.json
-    ├── package.json
-    └── .env
-```
 ---
 
 ### Contact us
