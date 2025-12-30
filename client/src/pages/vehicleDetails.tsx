@@ -81,13 +81,11 @@ export default function VehicleDetails() {
 
       const [autoResult, maintenanceResult] = await Promise.all([
         fetchAutoById(vinId),
-        fetchMaintenance(),
+        fetchMaintenance(vinId), // ✅ server filters/sorts
       ]);
 
-      setAuto(autoResult.data);
-
-      const filtered = maintenanceResult.data.filter((m) => m.vehicle_id === vinId);
-      setMaintenance(filtered);
+      setAuto(autoResult.data);               // ✅ YOU WERE MISSING THIS
+      setMaintenance(maintenanceResult.data); // already filtered/sorted
     } catch (err: any) {
       const msg =
         err?.response?.data?.message ||
@@ -148,6 +146,7 @@ export default function VehicleDetails() {
 
   async function handleSaveMaintenance() {
     setFormError("");
+    setSuccess("");
 
     if (!form.status) return setFormError("Status is required.");
     if (form.odometerreading < 0) return setFormError("Odometer reading must be 0 or more.");
@@ -300,13 +299,17 @@ export default function VehicleDetails() {
                   Odometer: {m.odometerreading.toLocaleString()} mi
                 </div>
 
+                {/* ✅ created date belongs INSIDE the map */}
+                {m.createddate && (
+                  <div className="text-sm text-gray-600">
+                    Created: {new Date(m.createddate).toLocaleDateString()}
+                  </div>
+                )}
+
                 {m.description && <div className="mt-1">{m.description}</div>}
 
                 <div className="mt-3 flex gap-2">
-                  <button
-                    className="px-3 py-1 rounded border"
-                    onClick={() => startEdit(m)}
-                  >
+                  <button className="px-3 py-1 rounded border" onClick={() => startEdit(m)}>
                     Edit
                   </button>
 
@@ -391,7 +394,6 @@ export default function VehicleDetails() {
             <button className="px-3 py-2 rounded border" onClick={closeModal}>
               Cancel
             </button>
-
             <MyButton
               label={saving ? "Saving..." : editingId ? "Update" : "Save"}
               onClick={handleSaveMaintenance}
@@ -403,3 +405,4 @@ export default function VehicleDetails() {
     </div>
   );
 }
+

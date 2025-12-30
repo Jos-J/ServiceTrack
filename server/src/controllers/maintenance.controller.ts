@@ -56,3 +56,18 @@ export const deleteMaintenance = async (id: number): Promise<ApiResponse<{ id: n
   return { data: { id } };
 };
 
+// GET /api/ maintenance?vehicle_id=123
+export const getMaintenanceByVehicleId = async (
+  vehicleId: number
+): Promise<ApiResponse<VehicleMaintenanceNested[]>> => {
+  const rows = await prisma.vehiclemaintenance.findMany({
+    where: { vehicle_id: vehicleId },
+    orderBy: { createddate: "desc" }, // ✅ newest first
+  });
+
+  const normalized = rows.map((m) =>
+    normalizeNullsToUndefined(m) as unknown as VehicleMaintenanceNested
+  );
+
+  return { data: normalized };
+};

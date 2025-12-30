@@ -5,6 +5,7 @@ import {
   createMaintenance,
   updateMaintenance,
   deleteMaintenance,
+  getMaintenanceByVehicleId
 } from "../controllers/maintenance.controller.js";
 
 import type {
@@ -17,8 +18,19 @@ const router = Router();
 
 // GET /api/maintenance - fetch all maintenance records
 router.get(
-  "/",
-  async (_req: Request, res: Response<ApiResponse<VehicleMaintenanceNested[]>>) => {
+   "/",
+  async (req: Request, res: Response<ApiResponse<VehicleMaintenanceNested[]>>) => {
+    const vehicleIdRaw = req.query.vehicle_id;
+
+    if (typeof vehicleIdRaw === "string") {
+      const vehicleId = Number(vehicleIdRaw);
+      if (!Number.isFinite(vehicleId)) {
+        return res.status(400).json({ data: [], message: "Invalid vehicle_id" });
+      }
+      const result = await getMaintenanceByVehicleId(vehicleId);
+      return res.json(result);
+    }
+
     const result = await getMaintenance();
     res.json(result);
   }
