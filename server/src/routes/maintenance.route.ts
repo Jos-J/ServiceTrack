@@ -5,8 +5,9 @@ import {
   createMaintenance,
   updateMaintenance,
   deleteMaintenance,
-  getMaintenanceByVehicleId
 } from "../controllers/maintenance.controller.js";
+
+import type { VehicleMaintenanceUpdateRequest } from "../types/api.js";
 
 import type {
   VehicleMaintenanceCreateRequest,
@@ -16,27 +17,27 @@ import type {
 
 const router = Router();
 
-// GET /api/maintenance - fetch all maintenance records
+// ✅ GET /api/maintenance?vehicle_id=123
 router.get(
-   "/",
+  "/",
   async (req: Request, res: Response<ApiResponse<VehicleMaintenanceNested[]>>) => {
-    const vehicleIdRaw = req.query.vehicle_id;
+    const raw = req.query.vehicle_id;
 
-    if (typeof vehicleIdRaw === "string") {
-      const vehicleId = Number(vehicleIdRaw);
+    let vehicleId: number | undefined = undefined;
+
+    if (typeof raw === "string") {
+      vehicleId = Number(raw);
       if (!Number.isFinite(vehicleId)) {
         return res.status(400).json({ data: [], message: "Invalid vehicle_id" });
       }
-      const result = await getMaintenanceByVehicleId(vehicleId);
-      return res.json(result);
     }
 
-    const result = await getMaintenance();
-    res.json(result);
+    const result = await getMaintenance(vehicleId);
+    return res.json(result);
   }
 );
 
-// POST /api/maintenance - create a new maintenance record
+// ✅ POST /api/maintenance
 router.post(
   "/",
   async (
@@ -44,35 +45,37 @@ router.post(
     res: Response<ApiResponse<VehicleMaintenanceNested>>
   ) => {
     const result = await createMaintenance(req.body);
-    res.status(201).json(result);
+    return res.status(201).json(result);
   }
 );
 
-// PATCH /api/maintenance/:id - update a maintenance record
+// ✅ PATCH /api/maintenance/:id
 router.patch(
   "/:id",
   async (
-    req: Request<{ id: string }, ApiResponse<VehicleMaintenanceNested>, Partial<VehicleMaintenanceCreateRequest>>,
+    req: Request<{ id: string }, ApiResponse<VehicleMaintenanceNested>, VehicleMaintenanceUpdateRequest>,
     res: Response<ApiResponse<VehicleMaintenanceNested>>
   ) => {
     const id = Number(req.params.id);
+    if (!Number.isFinite(id)) {
+      return res.status(400).json({ data: null as any, message: "Invalid id" });
+    }
     const result = await updateMaintenance(id, req.body);
-    res.json(result);
+    return res.json(result);
   }
 );
 
-// DELETE /api/maintenance/:id - delete a maintenance record
+
+// ✅ DELETE /api/maintenance/:id
 router.delete(
   "/:id",
-  async (
-    req: Request<{ id: string }>,
-    res: Response<ApiResponse<{ id: number }>>
-  ) => {
+  async (req: Request<{ id: string }>, res: Response<ApiResponse<{ id: number }>>) => {
     const id = Number(req.params.id);
     const result = await deleteMaintenance(id);
-    res.json(result);
+    return res.json(result);
   }
 );
 
 export default router;
+
 

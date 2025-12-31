@@ -65,6 +65,8 @@ export interface VehicleMaintenanceNested {
   technicians?: TechnicianNested;
   parts?: PartNested[];
   service_logs?: ServiceLogNested[];
+  createddated?: Date;
+  updateddated?: Date;
 }
 
 export interface VehicleMaintenanceCreateRequest {
@@ -84,7 +86,7 @@ export interface VehicleMaintenanceCreateRequest {
   shop_id?: number;
 }
 
-export interface VehicleMaintenanceUpdateRequest {
+export type VehicleMaintenanceUpdateRequest = Partial<{
   vehiclename?: string;
   mainttype?: string;
   description?: string;
@@ -93,7 +95,7 @@ export interface VehicleMaintenanceUpdateRequest {
   completeddate?: string;
   totalcost?: number;
   isactive?: boolean;
-}
+}>;
 
 export interface VehicleMaintenance extends VehicleMaintenanceNested {}
 

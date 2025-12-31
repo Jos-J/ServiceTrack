@@ -299,14 +299,13 @@ export default function VehicleDetails() {
                   Odometer: {m.odometerreading.toLocaleString()} mi
                 </div>
 
-                {/* ✅ created date belongs INSIDE the map */}
-                {m.createddate && (
-                  <div className="text-sm text-gray-600">
-                    Created: {new Date(m.createddate).toLocaleDateString()}
+                {m.description && <div className="mt-1">{m.description}</div>}
+
+                {m.updateddate && m.updateddate !== m.createddate && (
+                  <div className="text-xs text-gray-400">
+                    Updated: {new Date(m.updateddate).toLocaleString()}
                   </div>
                 )}
-
-                {m.description && <div className="mt-1">{m.description}</div>}
 
                 <div className="mt-3 flex gap-2">
                   <button className="px-3 py-1 rounded border" onClick={() => startEdit(m)}>
