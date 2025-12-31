@@ -301,6 +301,12 @@ export default function VehicleDetails() {
 
                 {m.description && <div className="mt-1">{m.description}</div>}
 
+                {m.createddate && (
+                  <div className="text-xs text-gray-500 mt-2">
+                    Created: {new Date(m.createddate).toLocaleString()}
+                  </div>
+                )}
+
                 {m.updateddate && m.updateddate !== m.createddate && (
                   <div className="text-xs text-gray-400">
                     Updated: {new Date(m.updateddate).toLocaleString()}
