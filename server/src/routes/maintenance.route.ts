@@ -15,7 +15,11 @@ import type {
   ApiResponse,
 } from "../types/api.js";
 
+import { requireAuth } from "..//middleware/requireAuth.js";
+
 const router = Router();
+
+//public
 
 // ✅ GET /api/maintenance?vehicle_id=123
 router.get(
@@ -36,6 +40,8 @@ router.get(
     return res.json(result);
   }
 );
+
+// Protect create/update/delete
 
 // ✅ POST /api/maintenance
 router.post(

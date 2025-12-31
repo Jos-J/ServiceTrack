@@ -23,6 +23,7 @@ export default function VehicleDetails() {
   const navigate = useNavigate();
 
   const vinId = useMemo(() => Number(params.id), [params.id]);
+  const isLoggedIn = Boolean(localStorage.getItem("accessToken"));
   const openFromRoute = location.pathname.endsWith("/add-maintenance");
 
   const [auto, setAuto] = useState<Auto | null>(null);
@@ -47,6 +48,7 @@ export default function VehicleDetails() {
   });
 
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null); // ✅ B: per-row delete disable
   const [formError, setFormError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -81,11 +83,11 @@ export default function VehicleDetails() {
 
       const [autoResult, maintenanceResult] = await Promise.all([
         fetchAutoById(vinId),
-        fetchMaintenance(vinId), // ✅ server filters/sorts
+        fetchMaintenance(vinId), // server filters/sorts
       ]);
 
-      setAuto(autoResult.data);               // ✅ YOU WERE MISSING THIS
-      setMaintenance(maintenanceResult.data); // already filtered/sorted
+      setAuto(autoResult.data);
+      setMaintenance(maintenanceResult.data);
     } catch (err: any) {
       const msg =
         err?.response?.data?.message ||
@@ -121,7 +123,8 @@ export default function VehicleDetails() {
   }, [meta]);
 
   function openModal() {
-    // add mode
+    if (!isLoggedIn) return;
+    
     setEditingId(null);
     setSuccess("");
     setFormError("");
@@ -140,7 +143,7 @@ export default function VehicleDetails() {
 
   function closeModal() {
     setFormError("");
-    setEditingId(null); // ✅ reset edit mode
+    setEditingId(null);
     navigate(`/vehicle/${vinId}`);
   }
 
@@ -155,7 +158,7 @@ export default function VehicleDetails() {
     try {
       setSaving(true);
 
-      // ✅ EDIT
+      // EDIT
       if (editingId) {
         const updated = await updateMaintenance(editingId, {
           mainttype: form.mainttype,
@@ -173,7 +176,7 @@ export default function VehicleDetails() {
         return;
       }
 
-      // ✅ ADD
+      // ADD
       const created = await createMaintenance(form);
       setMaintenance((prev) => [created.data, ...prev]);
       setSuccess("Maintenance added.");
@@ -198,6 +201,7 @@ export default function VehicleDetails() {
     setMaintenance((prev) => prev.filter((x) => x.maintenance_id !== id));
 
     try {
+      setDeletingId(id); // ✅ B: disable only this row
       await deleteMaintenance(id);
       setSuccess("Maintenance deleted.");
     } catch (err) {
@@ -205,6 +209,8 @@ export default function VehicleDetails() {
       console.error("deleteMaintenance error:", err);
       setSuccess("");
       alert("Delete failed. Restored previous list.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -276,13 +282,23 @@ export default function VehicleDetails() {
       <div className="mt-6 bg-white rounded shadow p-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold">Maintenance History</h2>
-
-          <button
-            className="px-3 py-2 rounded bg-gray-800 text-white"
-            onClick={openModal}
-          >
-            Add Maintenance
-          </button>
+          {isLoggedIn ? (
+            <button
+              className="px-3 py-2 rounded bg-gray-800 text-white disabled:opacity-50"
+              onClick={openModal}
+              disabled={!meta || saving} // ✅ B: prevent opening while saving / meta missing
+            >
+              Add Maintenance
+            </button>
+          ) : (
+            <button
+              className="px-3 py-2 rounded bg-gray-300 text-gray-600 cursor-not-allowed"
+              title="Log in to add maintenance"
+              disabled
+            >
+              Add Maintenance
+            </button>
+          )}
         </div>
 
         {maintenance.length === 0 ? (
@@ -301,29 +317,44 @@ export default function VehicleDetails() {
 
                 {m.description && <div className="mt-1">{m.description}</div>}
 
-                {m.createddate && (
-                  <div className="text-xs text-gray-500 mt-2">
-                    Created: {new Date(m.createddate).toLocaleString()}
+                {/* ✅ C: Dates left, actions right */}
+                <div className="mt-3 flex items-start justify-between gap-3">
+                  <div className="text-xs text-gray-500 space-y-1">
+                    {/* ✅ A: Created date */}
+                    {m.createddate && (
+                      <div>
+                        Created: {new Date(m.createddate).toLocaleString()}
+                      </div>
+                    )}
+
+                    {/* ✅ A: Updated date only if different */}
+                    {m.updateddate && m.updateddate !== m.createddate && (
+                      <div className="text-gray-400">
+                        Updated: {new Date(m.updateddate).toLocaleString()}
+                      </div>
+                    )}
                   </div>
-                )}
 
-                {m.updateddate && m.updateddate !== m.createddate && (
-                  <div className="text-xs text-gray-400">
-                    Updated: {new Date(m.updateddate).toLocaleString()}
-                  </div>
-                )}
+                  {/* ✅ Auth gated + ✅ B disabled during delete/save */}
+                  {isLoggedIn && (
+                    <div className="flex gap-2">
+                      <button
+                        className="px-3 py-1 rounded border disabled:opacity-50"
+                        onClick={() => startEdit(m)}
+                        disabled={saving || deletingId === m.maintenance_id}
+                      >
+                        Edit
+                      </button>
 
-                <div className="mt-3 flex gap-2">
-                  <button className="px-3 py-1 rounded border" onClick={() => startEdit(m)}>
-                    Edit
-                  </button>
-
-                  <button
-                    className="px-3 py-1 rounded border border-red-300 text-red-700"
-                    onClick={() => handleDeleteMaintenance(m.maintenance_id)}
-                  >
-                    Delete
-                  </button>
+                      <button
+                        className="px-3 py-1 rounded border border-red-300 text-red-700 disabled:opacity-50"
+                        onClick={() => handleDeleteMaintenance(m.maintenance_id)}
+                        disabled={saving || deletingId === m.maintenance_id}
+                      >
+                        {deletingId === m.maintenance_id ? "Deleting..." : "Delete"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </li>
             ))}
@@ -349,6 +380,7 @@ export default function VehicleDetails() {
               className="w-full border rounded p-2"
               value={form.mainttype ?? ""}
               onChange={(e) => setForm((p) => ({ ...p, mainttype: e.target.value }))}
+              disabled={saving}
             >
               {(meta?.maintTypes ?? []).map((t) => (
                 <option key={t} value={t}>
@@ -364,6 +396,7 @@ export default function VehicleDetails() {
               className="w-full border rounded p-2"
               value={form.status ?? ""}
               onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
+              disabled={saving}
             >
               {(meta?.statuses ?? []).map((s) => (
                 <option key={s} value={s}>
@@ -382,6 +415,7 @@ export default function VehicleDetails() {
               onChange={(e) =>
                 setForm((p) => ({ ...p, odometerreading: Number(e.target.value) }))
               }
+              disabled={saving}
             />
           </div>
 
@@ -392,13 +426,19 @@ export default function VehicleDetails() {
               value={form.description ?? ""}
               onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
               placeholder="Notes..."
+              disabled={saving}
             />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <button className="px-3 py-2 rounded border" onClick={closeModal}>
+            <button
+              className="px-3 py-2 rounded border disabled:opacity-50"
+              onClick={closeModal}
+              disabled={saving}
+            >
               Cancel
             </button>
+
             <MyButton
               label={saving ? "Saving..." : editingId ? "Update" : "Save"}
               onClick={handleSaveMaintenance}
@@ -410,4 +450,5 @@ export default function VehicleDetails() {
     </div>
   );
 }
+
 

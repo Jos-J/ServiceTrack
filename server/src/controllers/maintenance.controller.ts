@@ -7,6 +7,8 @@ import type {
   VehicleMaintenanceUpdateRequest,
 } from "../types/api.js";
 
+import { requireAuth } from "..//middleware/requireAuth.js";
+
 function normalizeNullsToUndefined<T>(obj: T): T {
   const copy: any = { ...(obj as any) };
   Object.keys(copy).forEach((k) => {
@@ -27,6 +29,8 @@ export const getMaintenance = async (
     data: maintenance.map((m) => normalizeNullsToUndefined(m) as unknown as VehicleMaintenanceNested),
   };
 };
+
+// Protect create/update/delete
 
 export const createMaintenance = async (
   body: VehicleMaintenanceCreateRequest
