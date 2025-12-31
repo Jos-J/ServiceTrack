@@ -6,7 +6,6 @@ type JwtPayload = {
   email?: string;
 };
 
-// ✅ Generic AuthedRequest so you can type params/body/query like normal Express Request
 export type AuthedRequest<
   P = any,
   ResBody = any,
@@ -30,8 +29,9 @@ export function requireAuth(req: AuthedRequest, res: Response, next: NextFunctio
 
     const decoded = jwt.verify(token, secret) as JwtPayload;
     req.user = decoded;
-    return next();
+    next();
   } catch {
     return res.status(401).json({ data: null, message: "Invalid token" });
   }
 }
+

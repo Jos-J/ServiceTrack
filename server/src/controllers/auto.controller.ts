@@ -1,66 +1,34 @@
-// server/src/routes/auto.routes.ts
-import { Router, type Response } from "express";
-import { getAutos, getAutoById, createAuto } from "../controllers/auto.controller.js";
+import { prisma } from "../prisma.js";
 import type { Auto, AutoCreateRequest, ApiResponse } from "../types/api.js";
-import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
 
-const router = Router();
+// ✅ GET /api/autos  (only autos owned by user)
+export const getAutos = async (userId: number): Promise<ApiResponse<Auto[]>> => {
+  const autos = await prisma.auto.findMany({
+    where: { owner_id: userId },
+    orderBy: { created_at: "desc" },
+  });
 
-/** ✅ GET /api/autos (protected, only your autos) */
-router.get(
-  "/",
-  requireAuth,
-  async (req: AuthedRequest, res: Response<ApiResponse<Auto[]>>) => {
-    const userId = req.user!.userId;
-    const result = await getAutos(userId);
-    return res.json(result);
-  }
-);
+  return { data: autos };
+};
 
-/** ✅ GET /api/autos/:id (protected, only your auto) */
-router.get(
-  "/:id",
-  requireAuth,
-  async (
-    req: AuthedRequest<{ id: string }>,
-    res: Response<ApiResponse<Auto | null>>
-  ) => {
-    const vinId = Number(req.params.id);
-    if (!Number.isFinite(vinId)) {
-      return res.status(400).json({ data: null, message: "Invalid id" });
-    }
+// ✅ GET /api/autos/:id  (only if owned by user)
+export const getAutoById = async (
+  vinId: number,
+  userId: number
+): Promise<ApiResponse<Auto | null>> => {
+  const auto = await prisma.auto.findFirst({
+    where: { vin_id: vinId, owner_id: userId },
+  });
 
-    const userId = req.user!.userId;
-    const result = await getAutoById(vinId, userId);
+  return { data: auto };
+};
 
-    if (!result.data) {
-      return res.status(404).json({ data: null, message: "Not found" });
-    }
-
-    // ✅ return the actual auto
-    return res.json(result);
-  }
-);
-
-/** ✅ POST /api/autos (protected, force owner_id from token) */
-router.post(
-  "/",
-  requireAuth,
-  async (
-    req: AuthedRequest<{}, ApiResponse<Auto>, AutoCreateRequest>,
-    res: Response<ApiResponse<Auto>>
-  ) => {
-    const userId = req.user!.userId;
-
-    const result = await createAuto({
-      ...req.body,
-      owner_id: userId, // override anything client sends
-    });
-
-    return res.status(201).json(result);
-  }
-);
-
-export default router;
+// ✅ POST /api/autos  (owner_id should be forced by the route)
+export const createAuto = async (
+  body: AutoCreateRequest
+): Promise<ApiResponse<Auto>> => {
+  const auto = await prisma.auto.create({ data: body });
+  return { data: auto };
+};
 
 
