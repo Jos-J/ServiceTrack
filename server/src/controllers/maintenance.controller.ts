@@ -58,29 +58,31 @@ export const updateMaintenance = async (
   id: number,
   body: VehicleMaintenanceUpdateRequest
 ): Promise<ApiResponse<VehicleMaintenanceNested | null>> => {
-  const row = await prisma.vehiclemaintenance.findUnique({
-    where: { maintenance_id: id },
-    select: {
-      maintenance_id: true,
-      auto: { select: { owner_id: true } }, // ✅ join ownership through relation
+  // ✅ single query: must exist AND belong to user
+  const record = await prisma.vehiclemaintenance.findFirst({
+    where: {
+      maintenance_id: id,
+      auto: { owner_id: userId },
     },
   });
 
-  if (!row) return { data: null, message: "Not found" };
-  if (row.auto.owner_id !== userId) return { data: null, message: "Forbidden" };
+  if (!record) {
+    return { data: null, message: "Not found" };
+  }
 
   const updated = await prisma.vehiclemaintenance.update({
     where: { maintenance_id: id },
     data: {
       ...body,
-      updateddate: new Date(), // ✅ bump updateddate on edit
+      updateddate: new Date(), // ✅ keep this (important)
     },
   });
 
   return {
-    data: normalizeNullsToUndefined(updated) as unknown as VehicleMaintenanceNested,
+    data: updated as unknown as VehicleMaintenanceNested,
   };
 };
+
 
 // ✅ DELETE /api/maintenance/:id (owner check by maintenance -> auto.owner_id)
 export const deleteMaintenance = async (
