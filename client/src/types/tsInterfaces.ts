@@ -66,6 +66,7 @@ export interface VehicleMaintenanceNested {
   parts?: PartNested[];
   service_logs?: ServiceLogNested[];
   createddate?: string;
+  updateddate?: string;
 }
 
 export interface VehicleMaintenanceCreateRequest {
