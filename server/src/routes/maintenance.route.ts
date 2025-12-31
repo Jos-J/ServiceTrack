@@ -7,21 +7,18 @@ import {
   deleteMaintenance,
 } from "../controllers/maintenance.controller.js";
 
-import type { VehicleMaintenanceUpdateRequest } from "../types/api.js";
-
 import type {
   VehicleMaintenanceCreateRequest,
   VehicleMaintenanceNested,
+  VehicleMaintenanceUpdateRequest,
   ApiResponse,
 } from "../types/api.js";
 
-import { requireAuth } from "..//middleware/requireAuth.js";
+import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
 
 const router = Router();
 
-//public
-
-// ✅ GET /api/maintenance?vehicle_id=123
+// ✅ GET /api/maintenance?vehicle_id=123 (public for now)
 router.get(
   "/",
   async (req: Request, res: Response<ApiResponse<VehicleMaintenanceNested[]>>) => {
@@ -41,47 +38,71 @@ router.get(
   }
 );
 
-// Protect create/update/delete
-
-// ✅ POST /api/maintenance
+// ✅ POST /api/maintenance (protected + ownership)
 router.post(
   "/",
+  requireAuth,
   async (
-    req: Request<{}, ApiResponse<VehicleMaintenanceNested>, VehicleMaintenanceCreateRequest>,
+    req: AuthedRequest<{}, ApiResponse<VehicleMaintenanceNested>, VehicleMaintenanceCreateRequest>,
     res: Response<ApiResponse<VehicleMaintenanceNested>>
   ) => {
-    const result = await createMaintenance(req.body);
+    const userId = req.user!.userId;
+
+    const result = await createMaintenance(userId, req.body);
+
+    if (result.message === "Forbidden") return res.status(403).json(result);
     return res.status(201).json(result);
   }
 );
 
-// ✅ PATCH /api/maintenance/:id
+// ✅ PATCH /api/maintenance/:id (protected + ownership)
 router.patch(
   "/:id",
+  requireAuth,
   async (
-    req: Request<{ id: string }, ApiResponse<VehicleMaintenanceNested>, VehicleMaintenanceUpdateRequest>,
-    res: Response<ApiResponse<VehicleMaintenanceNested>>
+    req: AuthedRequest<{ id: string }, ApiResponse<VehicleMaintenanceNested | null>, VehicleMaintenanceUpdateRequest>,
+    res: Response<ApiResponse<VehicleMaintenanceNested | null>>
   ) => {
+    const userId = req.user!.userId;
+
     const id = Number(req.params.id);
     if (!Number.isFinite(id)) {
-      return res.status(400).json({ data: null as any, message: "Invalid id" });
+      return res.status(400).json({ data: null, message: "Invalid id" });
     }
-    const result = await updateMaintenance(id, req.body);
+
+    const result = await updateMaintenance(userId, id, req.body);
+
+    if (result.message === "Forbidden") return res.status(403).json(result);
+    if (!result.data) return res.status(404).json(result);
     return res.json(result);
   }
 );
 
-
-// ✅ DELETE /api/maintenance/:id
+// ✅ DELETE /api/maintenance/:id (protected + ownership)
 router.delete(
   "/:id",
-  async (req: Request<{ id: string }>, res: Response<ApiResponse<{ id: number }>>) => {
+  requireAuth,
+  async (
+    req: AuthedRequest<{ id: string }, ApiResponse<{ id: number }>, any>,
+    res: Response<ApiResponse<{ id: number }>>
+  ) => {
+    const userId = req.user!.userId;
+
     const id = Number(req.params.id);
-    const result = await deleteMaintenance(id);
+    if (!Number.isFinite(id)) {
+      return res.status(400).json({ data: { id: -1 }, message: "Invalid id" });
+    }
+
+    const result = await deleteMaintenance(userId, id);
+
+    if (result.message === "Forbidden") return res.status(403).json(result);
+    if (result.message === "Not found") return res.status(404).json(result);
     return res.json(result);
   }
 );
 
 export default router;
+
+
 
 

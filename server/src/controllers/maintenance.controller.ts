@@ -1,4 +1,4 @@
-//server/src/controllers/maintenance.controller
+// server/src/controllers/maintenance.controller.ts
 import { prisma } from "../prisma.js";
 import type {
   ApiResponse,
@@ -6,8 +6,6 @@ import type {
   VehicleMaintenanceCreateRequest,
   VehicleMaintenanceUpdateRequest,
 } from "../types/api.js";
-
-import { requireAuth } from "..//middleware/requireAuth.js";
 
 function normalizeNullsToUndefined<T>(obj: T): T {
   const copy: any = { ...(obj as any) };
@@ -17,6 +15,7 @@ function normalizeNullsToUndefined<T>(obj: T): T {
   return copy as T;
 }
 
+// ✅ GET /api/maintenance?vehicle_id=123 (or all if no query)
 export const getMaintenance = async (
   vehicleId?: number
 ): Promise<ApiResponse<VehicleMaintenanceNested[]>> => {
@@ -30,30 +29,76 @@ export const getMaintenance = async (
   };
 };
 
-// Protect create/update/delete
-
+// ✅ POST /api/maintenance (owner check by auto.owner_id)
 export const createMaintenance = async (
+  userId: number,
   body: VehicleMaintenanceCreateRequest
 ): Promise<ApiResponse<VehicleMaintenanceNested>> => {
-  const maintenance = await prisma.vehiclemaintenance.create({ data: body });
-  return { data: normalizeNullsToUndefined(maintenance) as unknown as VehicleMaintenanceNested };
-};
+  const auto = await prisma.auto.findFirst({
+    where: { vin_id: body.vehicle_id, owner_id: userId },
+    select: { vin_id: true },
+  });
 
-export const updateMaintenance = async (
-  id: number,
-  body: VehicleMaintenanceUpdateRequest
-): Promise<ApiResponse<VehicleMaintenanceNested>> => {
-  const updated = await prisma.vehiclemaintenance.update({
-    where: { maintenance_id: id },
+  if (!auto) {
+    return { data: null as any, message: "Forbidden" };
+  }
+
+  const created = await prisma.vehiclemaintenance.create({
     data: body,
   });
 
-  return { data: normalizeNullsToUndefined(updated) as unknown as VehicleMaintenanceNested };
+  return {
+    data: normalizeNullsToUndefined(created) as unknown as VehicleMaintenanceNested,
+  };
 };
 
+// ✅ PATCH /api/maintenance/:id (owner check by maintenance -> auto.owner_id)
+export const updateMaintenance = async (
+  userId: number,
+  id: number,
+  body: VehicleMaintenanceUpdateRequest
+): Promise<ApiResponse<VehicleMaintenanceNested | null>> => {
+  const row = await prisma.vehiclemaintenance.findUnique({
+    where: { maintenance_id: id },
+    select: {
+      maintenance_id: true,
+      auto: { select: { owner_id: true } }, // ✅ join ownership through relation
+    },
+  });
+
+  if (!row) return { data: null, message: "Not found" };
+  if (row.auto.owner_id !== userId) return { data: null, message: "Forbidden" };
+
+  const updated = await prisma.vehiclemaintenance.update({
+    where: { maintenance_id: id },
+    data: {
+      ...body,
+      updateddate: new Date(), // ✅ bump updateddate on edit
+    },
+  });
+
+  return {
+    data: normalizeNullsToUndefined(updated) as unknown as VehicleMaintenanceNested,
+  };
+};
+
+// ✅ DELETE /api/maintenance/:id (owner check by maintenance -> auto.owner_id)
 export const deleteMaintenance = async (
+  userId: number,
   id: number
 ): Promise<ApiResponse<{ id: number }>> => {
+  const row = await prisma.vehiclemaintenance.findUnique({
+    where: { maintenance_id: id },
+    select: {
+      maintenance_id: true,
+      auto: { select: { owner_id: true } },
+    },
+  });
+
+  if (!row) return { data: { id }, message: "Not found" };
+  if (row.auto.owner_id !== userId) return { data: { id }, message: "Forbidden" };
+
   await prisma.vehiclemaintenance.delete({ where: { maintenance_id: id } });
   return { data: { id } };
 };
+
