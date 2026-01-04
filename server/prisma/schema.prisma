@@ -33,7 +33,7 @@ model parts {
   brand               String?             @db.VarChar(50)
   quantity            Int?
   unit_cost           Decimal?            @db.Decimal(10, 2)
-  total_cost          Decimal?            @default(dbgenerated("((quantity)::numeric * unit_cost)")) @db.Decimal(10, 2)
+  total_cost          Decimal             @default(0) @db.Decimal(10, 2)
   supplier_name       String?             @db.VarChar(100)
   purchase_date       DateTime?           @db.Date
   under_warranty      Boolean

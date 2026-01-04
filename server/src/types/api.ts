@@ -138,7 +138,6 @@ export interface PartCreateRequest {
   brand?: string;
   quantity?: number;
   unit_cost?: number;
-  total_cost?: number;
   supplier_name?: string;
   purchase_date?: string;
   under_warranty?: boolean;
@@ -155,7 +154,6 @@ export interface PartUpdateRequest {
   brand?: string;
   quantity?: number;
   unit_cost?: number;
-  total_cost?: number;
   supplier_name?: string;
   purchase_date?: string;
   under_warranty?: boolean;
