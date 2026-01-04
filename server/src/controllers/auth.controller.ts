@@ -1,3 +1,5 @@
+//server/src/controller/auth.controller
+
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";

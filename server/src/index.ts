@@ -1,4 +1,21 @@
 // server/src/index.ts
+process.on("uncaughtException", (err: any) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+  console.error("type:", typeof err);
+  console.error("keys:", err && Object.keys(err));
+  try { console.error("json:", JSON.stringify(err)); } catch {}
+});
+
+process.on("unhandledRejection", (reason: any) => {
+  console.error("UNHANDLED REJECTION:", reason);
+  console.error("type:", typeof reason);
+  console.error("keys:", reason && Object.keys(reason));
+  try { console.error("json:", JSON.stringify(reason)); } catch {}
+});
+
+
+
+
 import 'dotenv/config';
 import express from 'express';
 import cors from "cors";
