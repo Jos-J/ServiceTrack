@@ -13,6 +13,7 @@ import partsRoute from './routes/parts.route.js';
 // import shopRoute from './routes/shop.route';
 // import serviceLogRoute from './routes/serviceLog.route';
 import healthRoute from './routes/health.route.js';
+import authRoute from './routes/auth.route.js';
 
 export * from "./types/api.js";
 const app = express();
@@ -37,6 +38,7 @@ app.use('/api/parts', partsRoute);
 // app.use('/api/shops', shopRoute);
 // app.use('/api/service-logs', serviceLogRoute);
 app.use('/api/health', healthRoute);
+app.use('/api/auth', authRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
