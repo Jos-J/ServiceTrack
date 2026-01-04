@@ -23,7 +23,7 @@ CREATE TABLE "parts" (
     "brand" VARCHAR(50),
     "quantity" INTEGER,
     "unit_cost" DECIMAL(10,2),
-    "total_cost" DECIMAL(10,2) DEFAULT ((quantity)::numeric * unit_cost),
+    "total_cost" DECIMAL(10,2) NOT NULL DEFAULT 0,
     "supplier_name" VARCHAR(100),
     "purchase_date" DATE,
     "under_warranty" BOOLEAN NOT NULL,
