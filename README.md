@@ -4,7 +4,7 @@
 Service Track is a comprehensive vehicle management app designed to keep all your vehicle information organized and accessible. Whether you’re tracking personal cars, project builds, or an entire fleet, Service Track ensures that every VIN, service entry, and modification is safely stored and easy to find.
 
 ![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue)](https://www.postgresql.org/) 
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-blue)](https://www.postgresql.org/) 
 ---
  <!-- ###  Table of Contents 
 
