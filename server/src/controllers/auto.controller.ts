@@ -1,3 +1,5 @@
+// server/src/controllers/auto
+
 import { prisma } from "../prisma.js";
 import type { Auto, AutoCreateRequest, ApiResponse } from "../types/api.js";
 

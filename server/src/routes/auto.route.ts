@@ -1,3 +1,5 @@
+//server/src/routes/auto
+
 import { Router, type Response } from "express";
 import { getAutos, getAutoById, createAuto } from "../controllers/auto.controller.js";
 import type { Auto, AutoCreateRequest, ApiResponse } from "../types/api.js";
