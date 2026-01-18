@@ -1,3 +1,5 @@
+//client/src/api/autos.api
+
 import api from "./client";
 import type { ApiResponse, Auto, AutoCreateRequest } from "../types"; // 
 
