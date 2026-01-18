@@ -17,15 +17,19 @@ function normalizeNullsToUndefined<T>(obj: T): T {
 
 // ✅ GET /api/maintenance?vehicle_id=123 (or all if no query)
 export const getMaintenance = async (
+  userId: number,
   vehicleId?: number
 ): Promise<ApiResponse<VehicleMaintenanceNested[]>> => {
   const maintenance = await prisma.vehiclemaintenance.findMany({
-    where: typeof vehicleId === "number" ? { vehicle_id: vehicleId } : undefined,
+    where: {
+      auto: { owner_id: userId },
+      ...(typeof vehicleId === "number" ? { vehicle_id: vehicleId } : {}),
+    },
     orderBy: { createddate: "desc" },
   });
 
   return {
-    data: maintenance.map((m) => normalizeNullsToUndefined(m) as unknown as VehicleMaintenanceNested),
+    data: maintenance.map((m) => normalizeNullsToUndefined(m) as any),
   };
 };
 

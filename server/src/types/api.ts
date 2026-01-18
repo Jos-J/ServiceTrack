@@ -132,6 +132,7 @@ export interface PartNested extends Part {
 }
 
 export interface PartCreateRequest {
+  maintenance_id: number;  // optional relation
   part_name?: string;
   part_number?: string;     // <-- add this
   part_type?: string;
@@ -144,7 +145,6 @@ export interface PartCreateRequest {
   warranty_expiration?: string;
   created_by?: string;
   notes?: string;
-  maintenance_id?: number;  // optional relation
 }
 
 export interface PartUpdateRequest {
@@ -160,7 +160,6 @@ export interface PartUpdateRequest {
   warranty_expiration?: string;
   created_by?: string;
   notes?: string;
-  maintenance_id?: number;  // optional relation
 }
 
 export type PartResponse = ApiResponse<Part>;

@@ -20,19 +20,62 @@ const computeTotalCost = (
   return new Prisma.Decimal(q).mul(u);
 };
 
-// GET /api/parts
-export const getParts = async (): Promise<ApiResponse<PartNested[]>> => {
+// ✅ Ownership scope helper: part belongs to a maintenance that belongs to a vehicle that belongs to user
+const partBelongsToUser = async (userId: number, partId: number) => {
+  return prisma.parts.findFirst({
+    where: {
+      part_id: partId,
+      vehiclemaintenance: {
+        auto: { owner_id: userId },
+      },
+    },
+    select: {
+      part_id: true,
+      quantity: true,
+      unit_cost: true,
+    },
+  });
+};
+
+// ✅ GET /api/parts (only your parts)
+export const getParts = async (userId: number): Promise<ApiResponse<PartNested[]>> => {
   const parts = await prisma.parts.findMany({
+    where: {
+      vehiclemaintenance: {
+        auto: { owner_id: userId },
+      },
+    },
     include: { vehiclemaintenance: true },
+    orderBy: { created_date: "desc" },
   });
 
   return { data: normalizeNullsToUndefined(parts) as unknown as PartNested[] };
 };
 
-// POST /api/parts
+// ✅ POST /api/parts (must attach to your maintenance)
 export const createPart = async (
+  userId: number,
   body: PartCreateRequest
 ): Promise<ApiResponse<Part>> => {
+  // Require maintenance_id for secure linkage (recommended)
+  if (!body.maintenance_id) {
+    return { data: null as any, message: "maintenance_id is required" };
+  }
+
+  // Ownership check: maintenance must belong to user
+  const ownedMaintenance = await prisma.vehiclemaintenance.findFirst({
+    where: {
+      maintenance_id: body.maintenance_id,
+      auto: { owner_id: userId },
+    },
+    select: { maintenance_id: true },
+  });
+
+  // Option A: hide existence
+  if (!ownedMaintenance) {
+    return { data: null as any, message: "Not found" };
+  }
+
   // Normalize unit_cost into Prisma.Decimal (handles string/number)
   const unitCost =
     body.unit_cost === null || body.unit_cost === undefined
@@ -48,7 +91,8 @@ export const createPart = async (
     brand: body.brand,
     quantity: qty,
     unit_cost: unitCost,
-    // ✅ compute server-side; do not take from client
+
+    // ✅ compute server-side; do not accept from client
     total_cost: computeTotalCost(qty, unitCost),
 
     supplier_name: body.supplier_name,
@@ -58,24 +102,26 @@ export const createPart = async (
     created_by: body.created_by ?? "system",
     notes: body.notes,
 
-    ...(body.maintenance_id
-      ? { vehiclemaintenance: { connect: { maintenance_id: body.maintenance_id } } }
-      : {}),
+    vehiclemaintenance: { connect: { maintenance_id: body.maintenance_id } },
   };
 
   const part = await prisma.parts.create({ data });
   return { data: normalizeNullsToUndefined(part) as unknown as Part };
 };
 
-// PATCH /api/parts/:id
+// ✅ PATCH /api/parts/:id (only your part)
 export const updatePart = async (
+  userId: number,
   id: number,
   body: PartUpdateRequest
-): Promise<ApiResponse<Part>> => {
+): Promise<ApiResponse<Part | null>> => {
+  // Option A: only consider parts owned by user
+  const existing = await partBelongsToUser(userId, id);
+  if (!existing) return { data: null, message: "Not found" };
+
   const hasQty = Object.prototype.hasOwnProperty.call(body, "quantity");
   const hasUnit = Object.prototype.hasOwnProperty.call(body, "unit_cost");
 
-  // Build update payload
   const data: Prisma.partsUpdateInput = {
     part_name: body.part_name,
     part_number: body.part_number,
@@ -88,12 +134,12 @@ export const updatePart = async (
     warranty_expiration: body.warranty_expiration,
     created_by: body.created_by,
     notes: body.notes,
-    ...(body.maintenance_id
-      ? { vehiclemaintenance: { connect: { maintenance_id: body.maintenance_id } } }
-      : {}),
   };
 
-  // Normalize unit_cost if it was provided in the PATCH
+  // IMPORTANT: prevent re-linking a part to another maintenance via PATCH
+  // (If you want to support this later, we can add an ownership-checked move.)
+  // So we intentionally DO NOT allow maintenance_id updates here.
+
   if (hasUnit) {
     data.unit_cost =
       body.unit_cost === null || body.unit_cost === undefined
@@ -101,18 +147,13 @@ export const updatePart = async (
         : new Prisma.Decimal(body.unit_cost as any);
   }
 
-  // ✅ Only recompute total_cost if quantity or unit_cost is being changed
+  // Recompute total_cost only when qty or unit changes
   if (hasQty || hasUnit) {
-    const current = await prisma.parts.findUnique({
-      where: { part_id: id },
-      select: { quantity: true, unit_cost: true },
-    });
-    if (!current) return { data: null as any, message: "Not found" };
+    const nextQty = hasQty ? (body.quantity ?? null) : existing.quantity;
 
-    const nextQty = hasQty ? (body.quantity ?? null) : current.quantity;
     const nextUnit = hasUnit
       ? (data.unit_cost as Prisma.Decimal | null)
-      : current.unit_cost;
+      : existing.unit_cost;
 
     data.total_cost = computeTotalCost(nextQty, nextUnit);
   }
@@ -124,5 +165,18 @@ export const updatePart = async (
 
   return { data: normalizeNullsToUndefined(part) as unknown as Part };
 };
+
+// ✅ DELETE /api/parts/:id (only your part)
+export const deletePart = async (
+  userId: number,
+  id: number
+): Promise<ApiResponse<{ id: number }>> => {
+  const existing = await partBelongsToUser(userId, id);
+  if (!existing) return { data: { id }, message: "Not found" };
+
+  await prisma.parts.delete({ where: { part_id: id } });
+  return { data: { id } };
+};
+
 
 

@@ -18,12 +18,12 @@ import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
 
 const router = Router();
 
-// ✅ GET /api/maintenance?vehicle_id=123 (public for now)
+// ✅ GET /api/maintenance?vehicle_id=123 (protected, only your vehicle)
 router.get(
   "/",
-  async (req: Request, res: Response<ApiResponse<VehicleMaintenanceNested[]>>) => {
+  requireAuth,
+  async (req: AuthedRequest, res: Response<ApiResponse<VehicleMaintenanceNested[]>>) => {
     const raw = req.query.vehicle_id;
-
     let vehicleId: number | undefined = undefined;
 
     if (typeof raw === "string") {
@@ -33,7 +33,8 @@ router.get(
       }
     }
 
-    const result = await getMaintenance(vehicleId);
+    const userId = req.user!.userId;
+    const result = await getMaintenance(userId, vehicleId);
     return res.json(result);
   }
 );
@@ -72,7 +73,6 @@ router.patch(
 
     const result = await updateMaintenance(userId, id, req.body);
 
-    if (result.message === "Forbidden") return res.status(403).json(result);
     if (!result.data) return res.status(404).json(result);
     return res.json(result);
   }
