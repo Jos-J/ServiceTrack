@@ -1,19 +1,17 @@
 // client/src/auth/auth.ts
-const TOKEN_KEY = "token";
 
 export function setToken(token: string) {
-  localStorage.setItem(TOKEN_KEY, token);
-}
-
-export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+  localStorage.setItem("accessToken", token);
 }
 
 export function clearToken() {
-  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem("accessToken");
+}
+
+export function getToken() {
+  return localStorage.getItem("accessToken");
 }
 
 export function isLoggedIn(): boolean {
-  const token = getToken();
-  return Boolean(token && token.trim().length > 0);
+  return Boolean(localStorage.getItem("accessToken"));
 }

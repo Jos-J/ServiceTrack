@@ -1,3 +1,5 @@
+//client/src/api/auth.api
+
 import api from "./client";
 import type { ApiResponse } from "../types";
 

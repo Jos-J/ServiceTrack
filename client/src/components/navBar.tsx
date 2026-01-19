@@ -1,20 +1,20 @@
-// src/components/Navbar.tsx
+// client/src/components/Navbar.tsx
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { isLoggedIn as checkLoggedIn } from "../auth/auth";
+import { isLoggedIn } from "../auth/auth";
 
 export default function Navbar() {
   const location = useLocation();
-  const [loggedIn, setLoggedIn] = useState<boolean>(checkLoggedIn());
+  const [loggedIn, setLoggedIn] = useState<boolean>(() => isLoggedIn());
 
   // Re-check auth on navigation (covers login/logout redirects)
   useEffect(() => {
-    setLoggedIn(checkLoggedIn());
+    setLoggedIn(isLoggedIn());
   }, [location.pathname]);
 
   // Re-check auth if localStorage changes in another tab/window
   useEffect(() => {
-    const onStorage = () => setLoggedIn(checkLoggedIn());
+    const onStorage = () => setLoggedIn(isLoggedIn());
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
@@ -35,14 +35,7 @@ export default function Navbar() {
             Add Vehicle
           </Link>
 
-          <Link className="hover:text-yellow-400 px-3 py-2 rounded" to="/vehicle/1">
-            Vehicle Details
-          </Link>
-
-          <Link
-            className="ml-auto hover:text-green-400 px-3 py-2 rounded"
-            to="/logout"
-          >
+          <Link className="ml-auto hover:text-green-400 px-3 py-2 rounded" to="/logout">
             Logout
           </Link>
         </>
@@ -60,5 +53,6 @@ export default function Navbar() {
     </nav>
   );
 }
+
 
 
