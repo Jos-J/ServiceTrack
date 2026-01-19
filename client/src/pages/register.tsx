@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import MyButton from "../components/button";
 import { setToken } from "../auth/auth";
-import { register } from "../api/auth.api";
+import { register, login } from "../api/auth.api";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -15,7 +15,6 @@ export default function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // if user got redirected to register, send them back where they came from
   const from = (location.state as any)?.from?.pathname || "/garage";
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,11 +28,16 @@ export default function Register() {
     try {
       setLoading(true);
 
-      const result = await register(email, password);
+      // 1) Create the user
+      await register({ email, password });
 
-      // store RAW JWT (no Bearer prefix)
-      setToken(result.data.token);
+      // 2) Immediately login to get token
+      const loggedIn = await login(email, password);
 
+      // 3) store RAW JWT (no Bearer prefix)
+      setToken(loggedIn.data.token);
+
+      // 4) redirect
       navigate(from, { replace: true });
     } catch (err: any) {
       const msg =
@@ -91,3 +95,4 @@ export default function Register() {
     </div>
   );
 }
+

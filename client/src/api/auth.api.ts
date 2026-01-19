@@ -1,25 +1,22 @@
-//client/src/api/auth.api
-
+// client/src/api/auth.api.ts
 import api from "./client";
 import type { ApiResponse } from "../types";
 
-type AuthUser = {
-  user_id: number;
-  email: string;
-};
+export type LoginResponse = ApiResponse<{
+  token: string;
+  user: { user_id: number; email: string };
+}>;
 
 export async function login(email: string, password: string) {
-  const res = await api.post<ApiResponse<{ user: AuthUser; token: string }>>(
-    "/auth/login",
-    { email, password }
-  );
+  const res = await api.post<LoginResponse>("/auth/login", { email, password });
   return res.data;
 }
 
-export async function register(email: string, password: string) {
-  const res = await api.post<ApiResponse<{ user: AuthUser; token: string }>>(
-    "/auth/register",
-    { email, password }
-  );
+export type RegisterResponse = ApiResponse<{ user_id: number; email: string }>;
+
+export async function register(payload: { email: string; password: string }) {
+  const res = await api.post<RegisterResponse>("/auth/register", payload);
   return res.data;
 }
+
+
