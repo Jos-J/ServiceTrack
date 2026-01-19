@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import MyButton from "../components/button";
 import { setToken } from "../auth/auth";
+import { login } from "../api/auth.api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,31 +11,52 @@ export default function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Where the user was trying to go before being redirected to login
   const from = (location.state as any)?.from?.pathname || "/garage";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
-    // 🔐 Fake login (replace later with real API call)
-    const fakeToken = `fake-${Date.now()}`;
-    setToken(fakeToken);
+    try {
+      setLoading(true);
 
-    // Redirect back to intended page
-    navigate(from, { replace: true });
+      // username field is really email
+      const result = await login(username, password);
+
+      // IMPORTANT: store RAW JWT (no "Bearer ")
+      setToken(result.data.token);
+
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Login failed";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <div className="flex justify-center pt-40">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-80">
         <h1 className="text-xl font-bold mb-4">Login</h1>
-
-        <label htmlFor="uname">Username:</label>
+        {error && (
+          <div className="rounded border border-red-300 bg-red-50 p-2 text-red-700">
+            {error}
+          </div>
+        )}
+        <label htmlFor="email">Email:</label>
         <input
           type="text"
-          id="uname"
-          name="uname"
+          id="email"
+          name="email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="border p-2 rounded"
@@ -50,7 +72,7 @@ export default function Login() {
           className="border p-2 rounded"
         />
 
-        <MyButton type="submit" label="Login" />
+        <MyButton type="submit" label={loading ? "logging in..." : "Login"} disabled={loading} />
 
         <p className="mt-2 text-sm text-gray-600">
           Don&apos;t have an account?{" "}
