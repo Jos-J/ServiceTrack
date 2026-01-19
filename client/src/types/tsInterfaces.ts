@@ -132,38 +132,44 @@ export interface PartNested extends Part {
 }
 
 export interface PartCreateRequest {
+  maintenance_id: number; // ✅ required
+
   part_name?: string;
-  part_number?: string;     // <-- add this
+  part_number?: string;
   part_type?: string;
   brand?: string;
+
   quantity?: number;
   unit_cost?: number;
-  total_cost?: number;
+
   supplier_name?: string;
   purchase_date?: string;
   under_warranty?: boolean;
   warranty_expiration?: string;
+
   created_by?: string;
   notes?: string;
-  maintenance_id?: number;  // optional relation
 }
+
 
 export interface PartUpdateRequest {
   part_name?: string;
-  part_number?: string;     // <-- add this
+  part_number?: string;
   part_type?: string;
   brand?: string;
+
   quantity?: number;
   unit_cost?: number;
-  total_cost?: number;
+
   supplier_name?: string;
   purchase_date?: string;
   under_warranty?: boolean;
   warranty_expiration?: string;
+
   created_by?: string;
   notes?: string;
-  maintenance_id?: number;  // optional relation
 }
+
 
 export type PartResponse = ApiResponse<Part>;
  

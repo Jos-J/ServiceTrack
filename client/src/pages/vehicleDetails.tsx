@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { fetchAutoById } from "../api/autos.api";
+import { createPart } from "../api/parts.api";
 import {
   fetchMaintenance,
   createMaintenance,
@@ -13,9 +14,11 @@ import type {
   Auto,
   VehicleMaintenanceNested,
   VehicleMaintenanceCreateRequest,
+  PartCreateRequest,
 } from "../types";
 import Modal from "../components/Modal";
 import MyButton from "../components/button";
+
 
 export default function VehicleDetails() {
   const params = useParams();
@@ -35,6 +38,28 @@ export default function VehicleDetails() {
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const [partModalOpen, setPartModalOpen] = useState(false);
+  const [partForMaintenanceId, setPartForMaintenanceId] = useState<number | null>(null);
+
+  const [partForm, setPartForm] = useState<Omit<PartCreateRequest, "maintenance_id">>({
+    part_name: "",
+    part_number: "",
+    part_type: "",
+    brand: "",
+    quantity: 1,
+    unit_cost: 0,
+    supplier_name: "",
+    purchase_date: "",
+    under_warranty: false,
+    warranty_expiration: "",
+    created_by: "demo-user",
+    notes: "",
+  });
+
+  const [partSaving, setPartSaving] = useState(false);
+  const [partError, setPartError] = useState("");
+
 
   const [form, setForm] = useState<VehicleMaintenanceCreateRequest>({
     vehicle_id: vinId,
@@ -124,7 +149,7 @@ export default function VehicleDetails() {
 
   function openModal() {
     if (!isLoggedIn) return;
-    
+
     setEditingId(null);
     setSuccess("");
     setFormError("");
@@ -229,6 +254,60 @@ export default function VehicleDetails() {
     }));
 
     navigate(`/vehicle/${vinId}/add-maintenance`);
+  }
+  function openPartModal(maintenanceId: number) {
+    if (!isLoggedIn) return;
+    setPartError("");
+    setPartForMaintenanceId(maintenanceId);
+    setPartModalOpen(true);
+  }
+
+  function closePartModal() {
+    setPartError("");
+    setPartForMaintenanceId(null);
+    setPartModalOpen(false);
+  }
+
+  async function handleSavePart() {
+    setPartError("");
+
+    if (!partForMaintenanceId) {
+      return setPartError("No maintenance selected.");
+    }
+    if (!partForm.part_name?.trim()) {
+      return setPartError("Part name is required.");
+    }
+    if ((partForm.quantity ?? 0) < 0) {
+      return setPartError("Quantity must be 0 or more.");
+    }
+    if ((partForm.unit_cost ?? 0) < 0) {
+      return setPartError("Unit cost must be 0 or more.");
+    }
+
+    try {
+      setPartSaving(true);
+
+      await createPart({
+        maintenance_id: partForMaintenanceId, // ✅ key wiring
+        ...partForm,
+        // normalize empty strings to undefined (optional but cleaner)
+        purchase_date: partForm.purchase_date || undefined,
+        warranty_expiration: partForm.warranty_expiration || undefined,
+      });
+
+      setSuccess("Part added.");
+      closePartModal();
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.errors?.join?.(", ") ||
+        err?.message ||
+        "Failed to add part";
+      setPartError(msg);
+      console.error("createPart error:", err);
+    } finally {
+      setPartSaving(false);
+    }
   }
 
   if (loading) return <div className="p-4">Loading vehicle…</div>;
@@ -341,15 +420,23 @@ export default function VehicleDetails() {
                       <button
                         className="px-3 py-1 rounded border disabled:opacity-50"
                         onClick={() => startEdit(m)}
-                        disabled={saving || deletingId === m.maintenance_id}
+                        disabled={saving || deletingId === m.maintenance_id || partSaving}
                       >
                         Edit
                       </button>
 
                       <button
+                        className="px-3 py-1 rounded border disabled:opacity-50"
+                        onClick={() => openPartModal(m.maintenance_id)}
+                        disabled={saving || deletingId === m.maintenance_id || partSaving}
+                      >
+                        Add Part
+                      </button>
+
+                      <button
                         className="px-3 py-1 rounded border border-red-300 text-red-700 disabled:opacity-50"
                         onClick={() => handleDeleteMaintenance(m.maintenance_id)}
-                        disabled={saving || deletingId === m.maintenance_id}
+                        disabled={saving || deletingId === m.maintenance_id || partSaving}
                       >
                         {deletingId === m.maintenance_id ? "Deleting..." : "Delete"}
                       </button>
@@ -362,91 +449,82 @@ export default function VehicleDetails() {
         )}
       </div>
 
-      <Modal
-        open={modalOpen}
-        title={editingId ? "Edit Maintenance" : "Add Maintenance"}
-        onClose={closeModal}
-      >
-        {formError && (
+      <Modal open={partModalOpen} title="Add Part" onClose={closePartModal}>
+        {partError && (
           <div className="mb-3 rounded border border-red-300 bg-red-50 p-2 text-red-700">
-            {formError}
+            {partError}
           </div>
         )}
 
         <div className="space-y-3">
           <div>
-            <label className="block font-medium">Type</label>
-            <select
+            <label className="block font-medium">Part Name</label>
+            <input
               className="w-full border rounded p-2"
-              value={form.mainttype ?? ""}
-              onChange={(e) => setForm((p) => ({ ...p, mainttype: e.target.value }))}
-              disabled={saving}
-            >
-              {(meta?.maintTypes ?? []).map((t) => (
-                <option key={t} value={t}>
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
-                </option>
-              ))}
-            </select>
+              value={partForm.part_name ?? ""}
+              onChange={(e) => setPartForm((p) => ({ ...p, part_name: e.target.value }))}
+              disabled={partSaving}
+            />
           </div>
 
           <div>
-            <label className="block font-medium">Status</label>
-            <select
-              className="w-full border rounded p-2"
-              value={form.status ?? ""}
-              onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
-              disabled={saving}
-            >
-              {(meta?.statuses ?? []).map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block font-medium">Odometer Reading</label>
+            <label className="block font-medium">Quantity</label>
             <input
               type="number"
               className="w-full border rounded p-2"
-              value={form.odometerreading}
+              value={partForm.quantity ?? 0}
               onChange={(e) =>
-                setForm((p) => ({ ...p, odometerreading: Number(e.target.value) }))
+                setPartForm((p) => ({ ...p, quantity: Number(e.target.value) }))
               }
-              disabled={saving}
+              disabled={partSaving}
             />
           </div>
 
           <div>
-            <label className="block font-medium">Description</label>
-            <textarea
+            <label className="block font-medium">Unit Cost</label>
+            <input
+              type="number"
               className="w-full border rounded p-2"
-              value={form.description ?? ""}
-              onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
-              placeholder="Notes..."
-              disabled={saving}
+              value={partForm.unit_cost ?? 0}
+              onChange={(e) =>
+                setPartForm((p) => ({ ...p, unit_cost: Number(e.target.value) }))
+              }
+              disabled={partSaving}
             />
+          </div>
+
+          <div>
+            <label className="block font-medium">Under Warranty</label>
+            <input
+              type="checkbox"
+              className="mr-2"
+              checked={Boolean(partForm.under_warranty)}
+              onChange={(e) =>
+                setPartForm((p) => ({ ...p, under_warranty: e.target.checked }))
+              }
+              disabled={partSaving}
+            />
+            <span className="text-sm text-gray-700">Yes</span>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
             <button
               className="px-3 py-2 rounded border disabled:opacity-50"
-              onClick={closeModal}
-              disabled={saving}
+              onClick={closePartModal}
+              disabled={partSaving}
             >
               Cancel
             </button>
 
             <MyButton
-              label={saving ? "Saving..." : editingId ? "Update" : "Save"}
-              onClick={handleSaveMaintenance}
-              disabled={saving || !meta}
+              label={partSaving ? "Saving..." : "Save Part"}
+              onClick={handleSavePart}
+              disabled={partSaving}
             />
           </div>
         </div>
       </Modal>
+
     </div>
   );
 }
