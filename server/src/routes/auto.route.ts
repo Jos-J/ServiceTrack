@@ -12,7 +12,7 @@ router.get(
   "/",
   requireAuth,
   async (req: AuthedRequest, res: Response<ApiResponse<Auto[]>>) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
     const result = await getAutos(userId);
     return res.json(result);
   }
@@ -31,7 +31,7 @@ router.get(
       return res.status(400).json({ data: null, message: "Invalid id" });
     }
 
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
     const result = await getAutoById(vinId, userId);
 
     if (!result.data) {
@@ -50,7 +50,7 @@ router.post(
     req: AuthedRequest<{}, ApiResponse<Auto>, AutoCreateRequest>,
     res: Response<ApiResponse<Auto>>
   ) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
 
     const result = await createAuto({
       ...req.body,

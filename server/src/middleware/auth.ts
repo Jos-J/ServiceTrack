@@ -3,7 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 type JwtPayload = {
-  userId: number;
+  user_id: number;
   email?: string;
 };
 
