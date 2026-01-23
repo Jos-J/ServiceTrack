@@ -1,5 +1,5 @@
 // server/src/index.ts
-process.on("uncaughtException", (err: any) => {
+/* process.on("uncaughtException", (err: any) => {
   console.error("UNCAUGHT EXCEPTION:", err);
   console.error("type:", typeof err);
   console.error("keys:", err && Object.keys(err));
@@ -11,8 +11,8 @@ process.on("unhandledRejection", (reason: any) => {
   console.error("type:", typeof reason);
   console.error("keys:", reason && Object.keys(reason));
   try { console.error("json:", JSON.stringify(reason)); } catch {}
-});
-
+}); 
+*/
 
 import 'dotenv/config';
 import express from 'express';
@@ -29,6 +29,8 @@ import vehicleHistoryRoute from './routes/vehiclehistory.route.js';
 // import serviceLogRoute from './routes/serviceLog.route';
 import healthRoute from './routes/health.route.js';
 import authRoute from './routes/auth.route.js';
+
+
 
 export * from "./types/api.js";
 const app = express();
