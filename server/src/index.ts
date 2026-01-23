@@ -14,8 +14,6 @@ process.on("unhandledRejection", (reason: any) => {
 });
 
 
-
-
 import 'dotenv/config';
 import express from 'express';
 import cors from "cors";

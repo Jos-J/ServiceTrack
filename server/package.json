@@ -14,7 +14,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "node --loader ts-node/esm src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:reset": "prisma migrate reset",
@@ -29,6 +29,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
-    "prisma": "^6.19.2"
+    "prisma": "^6.19.2",
+    "tsx": "^4.21.0"
   }
 }
