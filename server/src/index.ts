@@ -22,7 +22,7 @@ import metaRoute from "./routes/meta.route.js";
 import autosRoute from './routes/auto.route.js';
 import maintenanceRoute from './routes/maintenance.route.js'
 import partsRoute from './routes/parts.route.js';
-// import vehicleHistoryRoute from './routes/vehiclehistory.route';
+import vehicleHistoryRoute from './routes/vehiclehistory.route.js';
 // import usersRoute from './routes/users.route';
 // import techniciansRoute from './routes/technicians.route';
 // import shopRoute from './routes/shop.route';
@@ -47,7 +47,7 @@ app.use("/api/meta",metaRoute);
 app.use('/api/autos', autosRoute);
 app.use('/api/maintenance', maintenanceRoute);
 app.use('/api/parts', partsRoute);
-// app.use('/api/vehicle-history', vehicleHistoryRoute);
+app.use('/api/vehicle-history', vehicleHistoryRoute);
 // app.use('/api/users', usersRoute);
 // app.use('/api/technicians', techniciansRoute);
 // app.use('/api/shops', shopRoute);

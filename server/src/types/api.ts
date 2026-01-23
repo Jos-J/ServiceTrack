@@ -312,14 +312,23 @@ export interface VehicleHistory {
   vehicle_id: number;
   user_id: number;
   registered?: boolean;
+  registered_start?: string | null;
+  registered_end?: string | null;
   auto?: AutoNested;
   users?: UserNested;
 }
 
 export interface VehicleHistoryCreateRequest {
   vehicle_id: number;
-  user_id: number;
   registered?: boolean;
+  registered_start?: string;
+  registered_end?: string;
+}
+
+export interface VehicleHistoryUpdateRequest {
+  registered?: boolean;
+  registered_start?: string | null;
+  registered_end?: string | null;
 }
 
 export type VehicleHistoryResponse = ApiResponse<VehicleHistory>; 
