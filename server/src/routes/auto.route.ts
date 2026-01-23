@@ -51,12 +51,7 @@ router.post(
     res: Response<ApiResponse<Auto>>
   ) => {
     const userId = req.user!.user_id;
-
-    const result = await createAuto({
-      ...req.body,
-      owner_id: userId,
-    });
-
+    const result = await createAuto(userId, req.body);
     return res.status(201).json(result);
   }
 );

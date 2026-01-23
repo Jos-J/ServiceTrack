@@ -29,24 +29,17 @@ export interface Auto {
   users?: UserNested;
 }
 
-export interface AutoCreateRequest {
-  vin: string;
-  make: string;
-  model: string;
-  vehicle_year: number;
-  miles: number;
-  owner_id: number;
-}
+export type AutoCreateRequest = Omit<
+  Auto,
+  "vin_id" | "owner_id" | "users"
+>;
 
-export interface AutoUpdateRequest {
-  vin?: string;
-  make?: string;
-  model?: string;
-  vehicle_year?: number;
-  miles?: number;
-  owner_id?: number;
-}
+export type AutoUpdateRequest = Partial<
+  Omit<Auto, "vin_id" | "owner_id" | "users">
+>;
 export type AutoResponse = ApiResponse<Auto>;
+
+
 
 // 2. Vehicle Maintenance
 // -------------------------

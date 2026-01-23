@@ -1,5 +1,6 @@
 // server/src/controllers/auto
 
+import { autoCreateInput } from "../generated/prisma/models.js";
 import { prisma } from "../prisma.js";
 import type { Auto, AutoCreateRequest, ApiResponse } from "../types/api.js";
 
@@ -25,12 +26,22 @@ export const getAutoById = async (
   return { data: auto };
 };
 
-// ✅ POST /api/autos  (owner_id should be forced by the route)
+// ✅ POST /api/autos  (server injects owner_id, prisma data is explicit)
 export const createAuto = async (
+  userId: number,
   body: AutoCreateRequest
 ): Promise<ApiResponse<Auto>> => {
-  const auto = await prisma.auto.create({ data: body });
+  const auto = await prisma.auto.create({
+    data: {
+      vin: body.vin,
+      make: body.make,
+      model: body.model,
+      vehicle_year: body.vehicle_year,
+      miles: body.miles,
+      owner_id: userId,
+    },
+  });
+
   return { data: auto };
 };
-
 
