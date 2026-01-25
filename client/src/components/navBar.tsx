@@ -2,10 +2,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { isLoggedIn } from "../auth/auth";
+import { useMeContext } from "../auth/MeProvider";
 
 export default function Navbar() {
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState<boolean>(() => isLoggedIn());
+  const { me } = useMeContext();
+  const displayName = [me?.first_name, me?.last_name].filter(Boolean).join(" ");
+
 
   // Re-check auth on navigation (covers login/logout redirects)
   useEffect(() => {
@@ -35,11 +39,16 @@ export default function Navbar() {
             Add Vehicle
           </Link>
 
-          <Link className="hover:text-yellow-400 px-3 py-2 rounded" to="/Profile">
+          <Link className="hover:text-yellow-400 px-3 py-2 rounded" to="/profile">
             Profile
           </Link>
 
-          <Link className="ml-auto hover:text-green-400 px-3 py-2 rounded" to="/logout">
+          {/* push everything after this to the right */}
+          <span className="ml-auto px-3 py-2 text-gray-200">
+            {displayName ? `Hi, ${displayName}` : me?.email ? `Hi, ${me.email}` : ""}
+          </span>
+
+          <Link className="hover:text-green-400 px-3 py-2 rounded" to="/logout">
             Logout
           </Link>
         </>
@@ -52,8 +61,6 @@ export default function Navbar() {
           <Link className="hover:text-yellow-400 px-3 py-2 rounded" to="/register">
             Register
           </Link>
-
-
         </>
       )}
     </nav>

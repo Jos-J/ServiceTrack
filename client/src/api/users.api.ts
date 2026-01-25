@@ -14,8 +14,18 @@ export type UserMe = {
 };
 
 export type UsersMeResponse = ApiResponse<UserMe>;
-
 export async function getMyUserProfile() {
-    const res = await api.get<UsersMeResponse>("/users/me");
-    return res.data
+  const res = await api.get<UsersMeResponse>("/users/me");
+  return res.data;
+}
+
+export type UpdateMePayload = Partial<Pick<
+  UserMe,
+  "first_name" | "last_name" | "phone_number" | "email" | "mechanic_rating"
+>>;
+export type UpdateMeResponse = ApiResponse<UserMe>;
+
+export async function updateMyUserProfile(payload: UpdateMePayload) {
+  const res = await api.put<UpdateMeResponse>("/users/me", payload);
+  return res.data;
 }

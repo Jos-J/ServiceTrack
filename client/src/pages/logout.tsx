@@ -3,24 +3,25 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { clearToken } from "../auth/auth";
 import { logout as logoutApi } from "../api/auth.api";
+import { useMeContext } from "../auth/MeProvider";
 
 export default function Logout() {
   const navigate = useNavigate();
+  const { setMe } = useMeContext(); // ✅ clear user immediately
 
   useEffect(() => {
     (async () => {
       try {
-        // server call
-        await logoutApi();
+        await logoutApi(); // optional server call
       } catch {
         // ignore
       } finally {
-        clearToken();              //  logs out
-        navigate("/login", { replace: true }); // reroutes go back to Home
+        clearToken();  // remove token
+        setMe(null);   // ✅ remove profile from context (navbar updates immediately)
+        navigate("/login", { replace: true });
       }
     })();
-  }, [navigate]);
-
+  }, [navigate, setMe]);
 
   return (
     <div className="flex justify-center pt-40">

@@ -3,11 +3,14 @@ import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import MyButton from "../components/button";
 import { setToken } from "../auth/auth";
+import { useMeContext } from "../auth/MeProvider";
 import { login } from "../api/auth.api";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+
+   const { refreshMe } = useMeContext(); // ✅ hooks at top level
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +32,11 @@ export default function Login() {
 
       // IMPORTANT: store RAW JWT (no "Bearer ")
       setToken(result.data.token);
+
+      
+
+      setToken(result.data.token);
+      await refreshMe();
 
       navigate(from, { replace: true });
     } catch (err: any) {
