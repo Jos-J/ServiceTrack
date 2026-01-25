@@ -9,6 +9,7 @@ import Logout from "../pages/Logout";
 import Garage from "../pages/Garage";
 import AddVehicle from "../pages/AddVehicle";
 import VehicleDetails from "../pages/VehicleDetails";
+import Profile from "../pages/Profile";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -29,6 +30,7 @@ export default function AppRoutes() {
         <Route path="/add-vehicle" element={<AddVehicle />} />
         <Route path="/vehicle/:id" element={<VehicleDetails />} />
         <Route path="/vehicle/:id/add-maintenance" element={<VehicleDetails />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
 
       {/* Back-compat redirects */}

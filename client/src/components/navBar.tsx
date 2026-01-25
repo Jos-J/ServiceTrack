@@ -35,6 +35,10 @@ export default function Navbar() {
             Add Vehicle
           </Link>
 
+          <Link className="hover:text-yellow-400 px-3 py-2 rounded" to="/Profile">
+            Profile
+          </Link>
+
           <Link className="ml-auto hover:text-green-400 px-3 py-2 rounded" to="/logout">
             Logout
           </Link>
@@ -48,6 +52,8 @@ export default function Navbar() {
           <Link className="hover:text-yellow-400 px-3 py-2 rounded" to="/register">
             Register
           </Link>
+
+
         </>
       )}
     </nav>
