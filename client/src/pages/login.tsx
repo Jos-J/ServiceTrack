@@ -28,13 +28,9 @@ export default function Login() {
       setLoading(true);
 
       // username field is really email
-      const result = await login(username, password);
+      const result = await login(username.trim(), password);
 
       // IMPORTANT: store RAW JWT (no "Bearer ")
-      setToken(result.data.token);
-
-      
-
       setToken(result.data.token);
       await refreshMe();
 
