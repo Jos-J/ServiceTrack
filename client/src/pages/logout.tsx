@@ -2,14 +2,25 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { clearToken } from "../auth/auth";
+import { logout as logoutApi } from "../api/auth.api";
 
 export default function Logout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    clearToken();              //  logs out
-    navigate("/", { replace: true }); // reroutes go back to Home
+    (async () => {
+      try {
+        // server call
+        await logoutApi();
+      } catch {
+        // ignore
+      } finally {
+        clearToken();              //  logs out
+        navigate("/login", { replace: true }); // reroutes go back to Home
+      }
+    })();
   }, [navigate]);
+
 
   return (
     <div className="flex justify-center pt-40">

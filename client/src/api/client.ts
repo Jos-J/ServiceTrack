@@ -1,9 +1,10 @@
 // client/src/api/client.ts
 import axios from "axios";
+import { clearToken } from "../auth/auth";
+
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
-  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -14,6 +15,15 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error?.response?.status === 401) {
+      clearToken();
+    }
+  }
+)
 
 export default api;
 

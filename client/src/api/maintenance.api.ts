@@ -6,8 +6,7 @@ import type {
   VehicleMaintenanceCreateRequest,
 } from "../types";
 
-// If your api baseURL already points to http://localhost:3000/api
-// then these paths are correct.
+
 
 export async function fetchMaintenance(vehicleId?: number) {
   const params = typeof vehicleId === "number" ? { vehicle_id: vehicleId } : undefined;
