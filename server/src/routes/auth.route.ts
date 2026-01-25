@@ -3,6 +3,8 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "../prisma.js";
+import { requireAuth } from "../middleware/auth.js";
+import type { AuthedRequest } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -75,5 +77,23 @@ router.post("/login", async (req, res) => {
   });
 });
 
+// ✅ NEW: validate token + return identity
+router.get("/me", requireAuth, async (req: AuthedRequest, res) => {
+  return res.json({
+    data: {
+      user_id: req.user!.user_id,
+      email: req.user!.email,
+    },
+  });
+});
+
+// ✅ NEW: logout (client clears token)
+router.post("/logout", requireAuth, async (_req: AuthedRequest, res) => {
+  return res.json({
+    data: null,
+    message: "Logged out",
+  });
+});
 
 export default router;
+

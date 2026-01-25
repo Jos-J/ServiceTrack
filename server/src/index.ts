@@ -56,6 +56,7 @@ app.use('/api/users', usersRoute);
 // app.use('/api/service-logs', serviceLogRoute);
 app.use('/api/health', healthRoute);
 app.use('/api/auth', authRoute);
+console.log("AUTH ROUTES MOUNTED AT /api/auth")
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>

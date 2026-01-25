@@ -1,8 +1,6 @@
 import type { Response, Request } from "express";
-import { PrismaClient } from "@prisma/client";
 import type { AuthedRequest } from "../middleware/auth.js";
-
-const prisma = new PrismaClient();
+import { prisma } from "../prisma.js";
 
 /**
  * GET /api/users/me
