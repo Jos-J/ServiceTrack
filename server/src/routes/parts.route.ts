@@ -24,7 +24,7 @@ router.get(
   "/",
   requireAuth,
   async (req: AuthedRequest, res: Response<ApiResponse<PartNested[]>>) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
     const result = await getParts(userId);
     return res.json(result);
   }
@@ -38,7 +38,7 @@ router.post(
     req: AuthedRequest<{}, ApiResponse<Part>, PartCreateRequest>,
     res: Response<ApiResponse<Part>>
   ) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
     const result = await createPart(userId, req.body);
 
     // Option A: do not leak existence
@@ -60,7 +60,7 @@ router.patch(
     req: AuthedRequest<{ id: string }, ApiResponse<Part | null>, PartUpdateRequest>,
     res: Response<ApiResponse<Part | null>>
   ) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
     const id = Number(req.params.id);
     if (!Number.isFinite(id)) {
       return res.status(400).json({ data: null, message: "Invalid id" });
@@ -85,7 +85,7 @@ router.delete(
     req: AuthedRequest<{ id: string }, ApiResponse<{ id: number }>>,
     res: Response<ApiResponse<{ id: number }>>
   ) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
     const id = Number(req.params.id);
     if (!Number.isFinite(id)) {
       return res.status(400).json({ data: { id: -1 }, message: "Invalid id" });
@@ -99,4 +99,3 @@ router.delete(
 );
 
 export default router;
-
