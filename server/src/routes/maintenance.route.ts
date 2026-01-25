@@ -33,7 +33,7 @@ router.get(
       }
     }
 
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
     const result = await getMaintenance(userId, vehicleId);
     return res.json(result);
   }
@@ -47,7 +47,7 @@ router.post(
     req: AuthedRequest<{}, ApiResponse<VehicleMaintenanceNested>, VehicleMaintenanceCreateRequest>,
     res: Response<ApiResponse<VehicleMaintenanceNested>>
   ) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
 
     const result = await createMaintenance(userId, req.body);
 
@@ -64,7 +64,7 @@ router.patch(
     req: AuthedRequest<{ id: string }, ApiResponse<VehicleMaintenanceNested | null>, VehicleMaintenanceUpdateRequest>,
     res: Response<ApiResponse<VehicleMaintenanceNested | null>>
   ) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
 
     const id = Number(req.params.id);
     if (!Number.isFinite(id)) {
@@ -86,7 +86,7 @@ router.delete(
     req: AuthedRequest<{ id: string }, ApiResponse<{ id: number }>, any>,
     res: Response<ApiResponse<{ id: number }>>
   ) => {
-    const userId = req.user!.userId;
+    const userId = req.user!.user_id;
 
     const id = Number(req.params.id);
     if (!Number.isFinite(id)) {
