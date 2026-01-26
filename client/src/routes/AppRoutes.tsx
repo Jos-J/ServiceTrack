@@ -12,6 +12,7 @@ import VehicleDetails from "../pages/VehicleDetails";
 import Profile from "../pages/Profile";
 
 import ProtectedRoute from "./ProtectedRoute";
+import ServiceTypes from "../pages/ServiceTypes";
 
 export default function AppRoutes() {
   return (
@@ -31,6 +32,8 @@ export default function AppRoutes() {
         <Route path="/vehicle/:id" element={<VehicleDetails />} />
         <Route path="/vehicle/:id/add-maintenance" element={<VehicleDetails />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/service-types" element={<ServiceTypes />} />
+
       </Route>
 
       {/* Back-compat redirects */}

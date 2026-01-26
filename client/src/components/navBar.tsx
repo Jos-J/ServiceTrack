@@ -38,6 +38,9 @@ export default function Navbar() {
           <Link className="hover:text-green-400 px-3 py-2 rounded" to="/add-vehicle">
             Add Vehicle
           </Link>
+          <Link className="hover:text-green-400 px-3 py-2 rounded" to="/service-types">
+          Service Types
+          </Link>
 
           <Link className="hover:text-yellow-400 px-3 py-2 rounded" to="/profile">
             Profile
