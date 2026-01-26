@@ -1,5 +1,7 @@
 // client/src/pages/VehicleDetails.tsx
 import { useEffect, useMemo, useState } from "react";
+import type { ServiceType } from "../types";
+import { fetchActiveServiceTypes } from "../api/serviceTypes.api";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { fetchAutoById } from "../api/autos.api";
 import { createPart } from "../api/parts.api";
@@ -42,6 +44,11 @@ export default function VehicleDetails() {
   const [partModalOpen, setPartModalOpen] = useState(false);
   const [partForMaintenanceId, setPartForMaintenanceId] = useState<number | null>(null);
 
+  // service types
+  const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
+  const [loadingServiceTypes, setLoadingServiceTypes] = useState(true);
+
+
   const [partForm, setPartForm] = useState<Omit<PartCreateRequest, "maintenance_id">>({
     part_name: "",
     part_number: "",
@@ -63,6 +70,7 @@ export default function VehicleDetails() {
 
   const [form, setForm] = useState<VehicleMaintenanceCreateRequest>({
     vehicle_id: vinId,
+    servicetype_id: 0,
     status: "runs & drives",
     odometerreading: 0,
     createdby: "demo-user",
@@ -179,6 +187,9 @@ export default function VehicleDetails() {
     if (!form.status) return setFormError("Status is required.");
     if (form.odometerreading < 0) return setFormError("Odometer reading must be 0 or more.");
     if (!meta) return setFormError("Metadata not loaded yet.");
+    if (!form.servicetype_id || form.servicetype_id === 0) {
+      return setFormError("Service type is required.");
+    }
 
     try {
       setSaving(true);
@@ -190,6 +201,7 @@ export default function VehicleDetails() {
           status: form.status,
           odometerreading: form.odometerreading,
           description: form.description,
+          servicetype_id: form.servicetype_id === 0 ? undefined : form.servicetype_id,
         });
 
         setMaintenance((prev) =>
@@ -309,6 +321,33 @@ export default function VehicleDetails() {
       setPartSaving(false);
     }
   }
+  useEffect(() => {
+    const loadServiceTypes = async () => {
+      try {
+        const result = await fetchActiveServiceTypes();
+        setServiceTypes(result.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingServiceTypes(false);
+      }
+    };
+
+    loadServiceTypes();
+  }, []);
+
+  useEffect(() => {
+    if (serviceTypes.length === 0) return;
+
+    setForm((prev) => ({
+      ...prev,
+      servicetype_id:
+        prev.servicetype_id && prev.servicetype_id !== 0
+          ? prev.servicetype_id
+          : serviceTypes[0].servicetype_id,
+    }));
+  }, [serviceTypes]);
+
 
   if (loading) return <div className="p-4">Loading vehicle…</div>;
 
@@ -361,6 +400,10 @@ export default function VehicleDetails() {
       <div className="mt-6 bg-white rounded shadow p-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold">Maintenance History</h2>
+          <div className="text-sm text-gray-500">
+            {loadingServiceTypes ? "Loading service types..." : `Service types: ${serviceTypes.length}`}
+          </div>
+
           {isLoggedIn ? (
             <button
               className="px-3 py-2 rounded bg-gray-800 text-white disabled:opacity-50"
@@ -387,7 +430,10 @@ export default function VehicleDetails() {
             {maintenance.map((m) => (
               <li key={m.maintenance_id} className="border rounded p-3">
                 <div className="font-medium">
-                  {m.mainttype ?? "Maintenance"} — {m.status}
+                  {m.servicetype
+                    ? `${m.servicetype.servicename} (${m.servicetype.servicecategory})`
+                    : (m.mainttype ?? "Maintenance")}{" "}
+                  — {m.status}
                 </div>
 
                 <div className="text-sm text-gray-600">
@@ -448,6 +494,111 @@ export default function VehicleDetails() {
           </ul>
         )}
       </div>
+
+      <Modal open={modalOpen} title={editingId ? "Edit Maintenance" : "Add Maintenance"} onClose={closeModal}>
+        {formError && (
+          <div className="mb-3 rounded border border-red-300 bg-red-50 p-2 text-red-700">
+            {formError}
+          </div>
+        )}
+
+        <div className="space-y-3">
+          {/* Service Type dropdown */}
+          <div>
+            <label className="block font-medium">Service Type</label>
+            <select
+              className="w-full border rounded p-2"
+              value={form.servicetype_id ?? 0}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, servicetype_id: Number(e.target.value) }))
+              }
+              disabled={saving || loadingServiceTypes}
+            >
+              <option value={0} disabled>
+                {loadingServiceTypes ? "Loading..." : "Select service type"}
+              </option>
+
+              {serviceTypes.map((st) => (
+                <option key={st.servicetype_id} value={st.servicetype_id}>
+                  {st.servicename} ({st.servicecategory})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-medium">Maintenance Type</label>
+            <select
+              className="w-full border rounded p-2"
+              value={form.mainttype ?? ""}
+              onChange={(e) => setForm((p) => ({ ...p, mainttype: e.target.value }))}
+              disabled={saving || !meta}
+            >
+              {(meta?.maintTypes ?? []).map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-medium">Status</label>
+            <select
+              className="w-full border rounded p-2"
+              value={form.status ?? ""}
+              onChange={(e) => setForm((p) => ({ ...p, status: e.target.value }))}
+              disabled={saving || !meta}
+            >
+              {(meta?.statuses ?? []).map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-medium">Odometer Reading</label>
+            <input
+              type="number"
+              className="w-full border rounded p-2"
+              value={form.odometerreading ?? 0}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, odometerreading: Number(e.target.value) }))
+              }
+              disabled={saving}
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium">Description</label>
+            <textarea
+              className="w-full border rounded p-2"
+              value={form.description ?? ""}
+              onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
+              disabled={saving}
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <button
+              className="px-3 py-2 rounded border disabled:opacity-50"
+              onClick={closeModal}
+              disabled={saving}
+            >
+              Cancel
+            </button>
+
+            <MyButton
+              label={saving ? "Saving..." : editingId ? "Update Maintenance" : "Save Maintenance"}
+              onClick={handleSaveMaintenance}
+              disabled={saving || !meta || (form.servicetype_id ?? 0) === 0}
+            />
+          </div>
+        </div>
+      </Modal>
+
 
       <Modal open={partModalOpen} title="Add Part" onClose={closePartModal}>
         {partError && (

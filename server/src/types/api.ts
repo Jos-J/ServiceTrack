@@ -88,6 +88,8 @@ export type VehicleMaintenanceUpdateRequest = Partial<{
   completeddate?: string;
   totalcost?: number;
   isactive?: boolean;
+
+  servicetype_id?: number;
 }>;
 
 export interface VehicleMaintenance extends VehicleMaintenanceNested {}

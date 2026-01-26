@@ -22,7 +22,7 @@ export async function createMaintenance(payload: VehicleMaintenanceCreateRequest
 export type VehicleMaintenanceUpdateRequest = Partial<
   Pick<
     VehicleMaintenanceCreateRequest,
-    "mainttype" | "status" | "odometerreading" | "description"
+    "mainttype" | "status" | "odometerreading" | "description" | "servicetype_id"
   >
 >;
 

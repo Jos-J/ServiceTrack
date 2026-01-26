@@ -26,6 +26,15 @@ export const getMaintenance = async (
       ...(typeof vehicleId === "number" ? { vehicle_id: vehicleId } : {}),
     },
     orderBy: { createddate: "desc" },
+    include: {
+      servicetype: {
+        select: {
+          servicetype_id: true,
+          servicename: true,
+          servicecategory: true,
+        },
+      },
+    },
   });
 
   return {
@@ -48,8 +57,34 @@ export const createMaintenance = async (
   }
 
   const created = await prisma.vehiclemaintenance.create({
-    data: body,
+    data: {
+      vehicle_id: body.vehicle_id,
+      vehiclename: body.vehiclename ?? null,
+      mainttype: body.mainttype ?? null,
+      description: body.description ?? null,
+      status: body.status,
+      odometerreading: body.odometerreading,
+      warrantystatus: body.warrantystatus,
+      createdby: body.createdby,
+      isactive: body.isactive ?? true,
+
+      servicetype_id: body.servicetype_id ?? null,
+      technician_type: body.technician_type ?? "Self",
+      technician_id: body.technician_id ?? null,
+      shop_id: body.shop_id ?? null,
+      totalcost: body.totalcost ?? 0,
+    },
+    include: {
+      servicetype: {
+        select: {
+          servicetype_id: true,
+          servicename: true,
+          servicecategory: true,
+        }
+      }
+    }
   });
+
 
   return {
     data: normalizeNullsToUndefined(created) as unknown as VehicleMaintenanceNested,
@@ -78,15 +113,24 @@ export const updateMaintenance = async (
     where: { maintenance_id: id },
     data: {
       ...body,
-      updateddate: new Date(), // ✅ keep this (important)
+      updateddate: new Date(),
+    },
+    include: {
+      servicetype: {
+        select: {
+          servicetype_id: true,
+          servicename: true,
+          servicecategory: true,
+        },
+      },
     },
   });
 
+
   return {
-    data: updated as unknown as VehicleMaintenanceNested,
+    data: normalizeNullsToUndefined(updated) as unknown as VehicleMaintenanceNested,
   };
 };
-
 
 // ✅ DELETE /api/maintenance/:id (owner check by maintenance -> auto.owner_id)
 export const deleteMaintenance = async (

@@ -81,7 +81,7 @@ export interface VehicleMaintenanceCreateRequest {
   mainttype?: string;
   description?: string;
   totalcost?: number;
-  servicetype_id?: number;
+  servicetype_id: number;
   technician_id?: number;
   shop_id?: number;
 }
@@ -95,6 +95,8 @@ export interface VehicleMaintenanceUpdateRequest {
   completeddate?: string;
   totalcost?: number;
   isactive?: boolean;
+
+  servicetype_id?: number;
 }
 
 export interface VehicleMaintenance extends VehicleMaintenanceNested {}
