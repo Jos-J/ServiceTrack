@@ -1,24 +1,10 @@
 // server/src/index.ts
-/* process.on("uncaughtException", (err: any) => {
-  console.error("UNCAUGHT EXCEPTION:", err);
-  console.error("type:", typeof err);
-  console.error("keys:", err && Object.keys(err));
-  try { console.error("json:", JSON.stringify(err)); } catch {}
-});
-
-process.on("unhandledRejection", (reason: any) => {
-  console.error("UNHANDLED REJECTION:", reason);
-  console.error("type:", typeof reason);
-  console.error("keys:", reason && Object.keys(reason));
-  try { console.error("json:", JSON.stringify(reason)); } catch {}
-}); 
-*/
 
 import 'dotenv/config';
 import express from 'express';
 import cors from "cors";
 import metaRoute from "./routes/meta.route.js";
-
+import serviceTypeRoute  from './routes/serviceType.route.js';
 import autosRoute from './routes/auto.route.js';
 import maintenanceRoute from './routes/maintenance.route.js'
 import partsRoute from './routes/parts.route.js';
@@ -54,6 +40,7 @@ app.use('/api/users', usersRoute);
 // app.use('/api/technicians', techniciansRoute);
 // app.use('/api/shops', shopRoute);
 // app.use('/api/service-logs', serviceLogRoute);
+app.use('/api/service-type', serviceTypeRoute)
 app.use('/api/health', healthRoute);
 app.use('/api/auth', authRoute);
 console.log("AUTH ROUTES MOUNTED AT /api/auth")
