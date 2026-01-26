@@ -40,7 +40,7 @@ app.use('/api/users', usersRoute);
 // app.use('/api/technicians', techniciansRoute);
 // app.use('/api/shops', shopRoute);
 // app.use('/api/service-logs', serviceLogRoute);
-app.use('/api/service-type', serviceTypeRoute)
+app.use('/api/service-types', serviceTypeRoute)
 app.use('/api/health', healthRoute);
 app.use('/api/auth', authRoute);
 console.log("AUTH ROUTES MOUNTED AT /api/auth")

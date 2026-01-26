@@ -337,6 +337,7 @@ export default function VehicleDetails() {
   }, []);
 
   useEffect(() => {
+    if (loadingServiceTypes) return;
     if (serviceTypes.length === 0) return;
 
     setForm((prev) => ({
@@ -402,6 +403,7 @@ export default function VehicleDetails() {
           <h2 className="text-xl font-bold">Maintenance History</h2>
           <div className="text-sm text-gray-500">
             {loadingServiceTypes ? "Loading service types..." : `Service types: ${serviceTypes.length}`}
+            {/* loading: {String(loadingServiceTypes)} | count: {serviceTypes.length} */}
           </div>
 
           {isLoggedIn ? (
@@ -514,7 +516,7 @@ export default function VehicleDetails() {
               }
               disabled={saving || loadingServiceTypes}
             >
-              <option value={0} disabled>
+              <option value={0}>
                 {loadingServiceTypes ? "Loading..." : "Select service type"}
               </option>
 
