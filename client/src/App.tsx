@@ -1,6 +1,6 @@
 // client/src/App.tsx
 import { BrowserRouter } from "react-router-dom";
-import Navbar from "./components/NavbarTemp";
+import Navbar from "./components/Navbar";
 import AppRoutes from "./routes/AppRoutes";
 import { useEffect } from "react";
 import { getToken, clearToken } from "./auth/auth";
