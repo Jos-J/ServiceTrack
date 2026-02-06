@@ -1,6 +1,6 @@
 // server/src/controllers/auto
 
-import { autoCreateInput } from "../generated/prisma/models.js";
+// import type { autoCreateInput } from "../generated/prisma/models.js";
 import { prisma } from "../prisma.js";
 import type { Auto, AutoCreateRequest, ApiResponse } from "../types/api.js";
 

@@ -38,7 +38,7 @@ export const getMaintenance = async (
   });
 
   return {
-    data: maintenance.map((m) => normalizeNullsToUndefined(m) as any),
+    data: maintenance.map((m: VehicleMaintenanceNested) => normalizeNullsToUndefined(m) as any),
   };
 };
 
