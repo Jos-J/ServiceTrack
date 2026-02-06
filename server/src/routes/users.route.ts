@@ -11,6 +11,6 @@ router.get("/me", requireAuth, getMe);
 router.put("/me", requireAuth, updateMe);
 
 // Basic/nested user info (safe)
-router.get("/:id/basic", getUserBasicById);
+router.get("/:id/basic",requireAuth, getUserBasicById);
 
 export default router;

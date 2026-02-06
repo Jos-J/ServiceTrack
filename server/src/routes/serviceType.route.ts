@@ -8,22 +8,17 @@ import {
   updateServiceType,
   deactivateServiceType,
 } from "../controllers/serviceType.controller.js";
+import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
-// GET /service-types?active=true
+// public
 router.get("/", getServiceTypes);
-
-// GET /service-types/:id
 router.get("/:id", getServiceTypeById);
 
-// POST /service-types
-router.post("/", createServiceType);
-
-// PUT /service-types/:id
-router.put("/:id", updateServiceType);
-
-// DELETE /service-types/:id  (soft deactivate)
-router.delete("/:id", deactivateServiceType);
+// protected
+router.post("/", requireAuth, createServiceType);
+router.put("/:id", requireAuth, updateServiceType);
+router.delete("/:id", requireAuth, deactivateServiceType);
 
 export default router;

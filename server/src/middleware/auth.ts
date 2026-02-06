@@ -27,7 +27,7 @@ export function requireAuth(req: AuthedRequest, res: Response, next: NextFunctio
   try {
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      return res.status(500).json({ data: null, message: "Server auth not configured" });
+      return res.status(500).json({ data: null, message: "JWT_SECRET not set" });
     }
 
     const decoded = jwt.verify(token, secret) as JwtPayload;
