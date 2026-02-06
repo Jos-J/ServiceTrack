@@ -5,6 +5,7 @@ import AppRoutes from "./routes/AppRoutes";
 import { useEffect } from "react";
 import { getToken, clearToken } from "./auth/auth";
 import { me } from "./api/auth.api";
+import TestBuildBadge from "./components/TestBuildBadge";
 
 function App() {
   useEffect(() => {
@@ -26,6 +27,7 @@ function App() {
       <div className="min-h-screen bg-gray-100">
         <Navbar />
         <AppRoutes />
+        <TestBuildBadge />
       </div>
     </BrowserRouter>
   );
