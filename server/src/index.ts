@@ -3,18 +3,18 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from "cors";
-import metaRoute from "./routes/meta.route";
-import serviceTypeRoute  from './routes/serviceType.route';
+import metaRoute from "./routes/meta.route.js";
+import serviceTypeRoute  from './routes/serviceType.route.js';
 import autosRoute from './routes/auto.route.js';
-import maintenanceRoute from './routes/maintenance.route'
-import partsRoute from './routes/parts.route';
-import vehicleHistoryRoute from './routes/vehicleHistory.route';
-import usersRoute from './routes/users.route';
+import maintenanceRoute from './routes/maintenance.route.js'
+import partsRoute from './routes/parts.route.js';
+import vehicleHistoryRoute from './routes/vehicleHistory.route.js';
+import usersRoute from './routes/users.route.js';
 // import techniciansRoute from './routes/technicians.route';
 // import shopRoute from './routes/shop.route';
 // import serviceLogRoute from './routes/serviceLog.route';
-import healthRoute from './routes/health.route';
-import authRoute from './routes/auth.route';
+import healthRoute from './routes/health.route.js';
+import authRoute from './routes/auth.route.js';
 
 
 
