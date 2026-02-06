@@ -23,10 +23,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN?.split(",") ?? [],
     credentials: true,
   })
-)
+);
+
 
 app.use(express.json());
 app.use("/api/meta",metaRoute);
@@ -45,7 +46,8 @@ app.use('/api/health', healthRoute);
 app.use('/api/auth', authRoute);
 console.log("AUTH ROUTES MOUNTED AT /api/auth")
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+const PORT = Number(process.env.PORT) || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});

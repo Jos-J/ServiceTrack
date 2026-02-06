@@ -1,3 +1,5 @@
+//server/src/routes/serviceType.route
+
 import { Router } from "express";
 import {
   getServiceTypes,

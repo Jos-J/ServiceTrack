@@ -1,3 +1,5 @@
+//server/src/routes/user.routes
+
 import { Router } from "express";
 import { requireAuth } from "../middleware/auth.js";
 import { getMe, updateMe, getUserBasicById } from "../controllers/users.controller.js";

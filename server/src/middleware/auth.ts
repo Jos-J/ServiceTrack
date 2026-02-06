@@ -26,7 +26,9 @@ export function requireAuth(req: AuthedRequest, res: Response, next: NextFunctio
 
   try {
     const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error("JWT_SECRET not set");
+    if (!secret) {
+      return res.status(500).json({ data: null, message: "Server auth not configured" });
+    }
 
     const decoded = jwt.verify(token, secret) as JwtPayload;
     req.user = decoded;
@@ -35,4 +37,3 @@ export function requireAuth(req: AuthedRequest, res: Response, next: NextFunctio
     return res.status(401).json({ data: null, message: "Invalid token" });
   }
 }
-
