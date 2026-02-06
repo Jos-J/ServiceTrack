@@ -43,8 +43,7 @@ Service Track is a comprehensive vehicle management app designed to keep all you
 
 Have suggestions or feedback, let us know. Feel free to reach out:
 
-- Email: [Support@email.com ](malto:email@example.com)
-- Phone: [123456789](tel:123456789)
+- Email: [jos.apps480@gmail.com](mailto:jos.apps480@gmail.com)
 
 Your feedback is appreciated, thank you for helping us improve.
 
