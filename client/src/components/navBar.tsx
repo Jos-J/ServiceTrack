@@ -10,6 +10,8 @@ export default function Navbar() {
   const { me } = useMeContext();
   const displayName = [me?.first_name, me?.last_name].filter(Boolean).join(" ");
 
+  const isTestBuild = import.meta.env.VITE_APP_ENV !== "productions";
+
 
   // Re-check auth on navigation (covers login/logout redirects)
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function Navbar() {
             Add Vehicle
           </Link>
           <Link className="hover:text-green-400 px-3 py-2 rounded" to="/service-types">
-          Service Types
+            Service Types
           </Link>
 
           <Link className="hover:text-yellow-400 px-3 py-2 rounded" to="/profile">
@@ -47,9 +49,17 @@ export default function Navbar() {
           </Link>
 
           {/* push everything after this to the right */}
-          <span className="ml-auto px-3 py-2 text-gray-200">
-            {displayName ? `Hi, ${displayName}` : me?.email ? `Hi, ${me.email}` : ""}
-          </span>
+          <div className="ml-auto flex items-center gap-3 px-3 py-2">
+            {isTestBuild && (
+              <span className="text-[10px] uppercase tracking-widest text-gray-300 opacity-80">
+                TEST BUILD
+              </span>
+            )}
+
+            <span className="text-gray-200">
+              {displayName ? `Hi, ${displayName}` : me?.email ? `Hi, ${me.email}` : ""}
+            </span>
+          </div>
 
           <Link className="hover:text-green-400 px-3 py-2 rounded" to="/logout">
             Logout
