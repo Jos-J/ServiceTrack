@@ -1,14 +1,14 @@
 // client/src/routes/AppRoutes.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import Home from "../pages/HomeTemp";
-import Login from "../pages/LoginTemp";
-import Register from "../pages/RegisterTemp";
-import Logout from "../pages/LogoutTemp";
+import Home from "../pages/Home";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import Logout from "../pages/Logout";
 
-import Garage from "../pages/GarageTemp";
-import AddVehicle from "../pages/AddVehicleTemp";
-import VehicleDetails from "../pages/VehicleDetailsTemp";
+import Garage from "../pages/Garage";
+import AddVehicle from "../pages/AddVehicle";
+import VehicleDetails from "../pages/VehicleDetails";
 import Profile from "../pages/Profile";
 
 import ProtectedRoute from "./ProtectedRoute";
