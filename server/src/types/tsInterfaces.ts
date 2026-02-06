@@ -1,2 +1,2 @@
 // server/src/types/tsInterfaces.ts
-export * from "./api";
+export * from "./api.js";

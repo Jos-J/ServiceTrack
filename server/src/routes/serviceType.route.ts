@@ -5,7 +5,7 @@ import {
   createServiceType,
   updateServiceType,
   deactivateServiceType,
-} from "../controllers/serviceType.controller";
+} from "../controllers/serviceType.controller.js";
 
 const router = Router();
 

@@ -1,4 +1,5 @@
 // server/src/types/db.ts
-import type { Decimal } from "@prisma/client/runtime/library";
+import type { Prisma } from "@prisma/client";
 
-export type PrismaDecimal = Decimal;
+export type PrismaDecimal = Prisma.Decimal;
+
