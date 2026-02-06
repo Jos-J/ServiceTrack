@@ -8,7 +8,7 @@ import serviceTypeRoute  from './routes/serviceType.route.js';
 import autosRoute from './routes/auto.route.js';
 import maintenanceRoute from './routes/maintenance.route.js'
 import partsRoute from './routes/parts.route.js';
-import vehicleHistoryRoute from './routes/vehicleHistory.route.js';
+import vehicleHistoryRoute from './routes/vehiclehistory.route.js';
 import usersRoute from './routes/users.route.js';
 // import techniciansRoute from './routes/technicians.route';
 // import shopRoute from './routes/shop.route';
