@@ -5,10 +5,10 @@ import jwt from "jsonwebtoken";
 import { prisma } from "../prisma.js";
 import { requireAuth } from "../middleware/auth.js";
 import type { AuthedRequest } from "../middleware/auth.js";
-import  cors from "cors";
+// import  cors from "cors";
 
 const router = Router();
-router.options(/.*/, cors());
+// router.options(/.*/, cors({ origin: true, credentials: true }));
 
 router.post("/register", async (req, res) => {
   const { email, password, first_name, last_name } = req.body;
