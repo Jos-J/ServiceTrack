@@ -56,7 +56,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/api/version", (_req, res) => {
-  res.json({ version: "cors-fix-1", time: Date.now() });
+  res.json({ version: "v1-cors-check", time: Date.now() });
 });
 
 
