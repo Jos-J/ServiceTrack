@@ -21,6 +21,12 @@ import authRoute from './routes/auth.route.js';
 export * from "./types/api.js";
 const app = express();
 
+app.use((req, _res, next) => {
+  console.log("REQ", req.method, req.originalUrl, "Origin:", req.headers.origin);
+  next();
+});
+
+
 const allowedOrigins = (process.env.CORS_ORIGIN ?? "")
   .split(",")
   .map((s) => s.trim())
@@ -46,35 +52,8 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions));
-
-
 
 app.use(express.json());
-
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    const origin = req.headers.origin as string | undefined;
-    const allowed = (process.env.CORS_ORIGIN ?? "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    if (origin && allowed.includes(origin)) {
-      res.header("Access-Control-Allow-Origin", origin);
-      res.header("Vary", "Origin");
-      res.header("Access-Control-Allow-Credentials", "true");
-      res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-      res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-      return res.sendStatus(204);
-    }
-
-    // Even if origin isn't allowed, don't crash—just respond.
-    return res.sendStatus(204);
-  }
-  next();
-});
-
 
 app.use("/api/meta", metaRoute);
 
@@ -93,6 +72,12 @@ app.use('/api/auth', authRoute);
 console.log("AUTH ROUTES MOUNTED AT /api/auth")
 
 const PORT = Number(process.env.PORT) || 3000;
+
+app.use((err: any, _req: any, res: any, _next: any) => {
+  console.error("UNHANDLED ERROR:", err);
+  res.status(500).send("Internal Server Error");
+});
+
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
