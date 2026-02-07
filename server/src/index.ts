@@ -35,18 +35,7 @@ const allowedOrigins = (process.env.CORS_ORIGIN ?? "")
   .filter(Boolean);
 
 const corsOptions: cors.CorsOptions = {
-  origin: (origin, callback) => {
-    // Allow curl/Postman (no origin)
-    if (!origin) return callback(null, true);
-
-    // Allow listed origins
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-
-    console.log("Blocked by CORS:", origin, "allowed:", allowedOrigins);
-
-    // IMPORTANT: don't throw an Error (can turn into 500 on OPTIONS)
-    return callback(null, false);
-  },
+  origin: true,
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
