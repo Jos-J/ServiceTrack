@@ -56,6 +56,11 @@ app.options(/.*/, cors(corsOptions));
 
 app.use(express.json());
 
+app.get("/api/version", (_req, res) => {
+  res.json({ version: "cors-fix-1", time: Date.now() });
+});
+
+
 app.use("/api/meta", metaRoute);
 
 // ROUTES
