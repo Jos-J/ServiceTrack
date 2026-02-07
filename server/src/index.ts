@@ -69,7 +69,7 @@ app.use('/api/users', usersRoute);
 // app.use('/api/service-logs', serviceLogRoute);
 app.use('/api/service-types', serviceTypeRoute)
 app.use('/api/health', healthRoute);
-app.use('/api/auth', authRoute);
+app.use('/api/auth', cors(corsOptions), authRoute);
 console.log("AUTH ROUTES MOUNTED AT /api/auth")
 
 const PORT = Number(process.env.PORT) || 3000;
