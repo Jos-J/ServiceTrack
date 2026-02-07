@@ -21,29 +21,33 @@ import authRoute from './routes/auth.route.js';
 export * from "./types/api.js";
 const app = express();
 
-const allowedOrigins = [
-  process.env.CORS_ORIGIN?.trim(),
-].filter(Boolean) as string[];
+const allowedOrigins = (process.env.CORS_ORIGIN ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
     // Allow curl/Postman (no origin)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
+    // Allow listed origins
+    if (allowedOrigins.includes(origin)) return callback(null, true);
 
-    console.log("Blocked by CORS:", origin);
-    return callback(new Error("Not allowed by CORS"));
+    console.log("Blocked by CORS:", origin, "allowed:", allowedOrigins);
+
+    // IMPORTANT: don't throw an Error (can turn into 500 on OPTIONS)
+    return callback(null, false);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
+
 
 
 app.use(express.json());

@@ -1,3 +1,4 @@
+// server/src/routes/meta.route.ts
 import { Router, type Request, type Response } from "express";
 import type { ApiResponse } from "../types/api.js";
 
@@ -20,5 +21,9 @@ router.get(
     });
   }
 );
+
+router.get("/", (_req, res) => {
+  res.json({ data: { status: "OK" } });
+});
 
 export default router;
