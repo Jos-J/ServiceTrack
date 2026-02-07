@@ -21,11 +21,13 @@ import authRoute from './routes/auth.route.js';
 export * from "./types/api.js";
 const app = express();
 
+
 app.use((req, _res, next) => {
   console.log("REQ", req.method, req.originalUrl, "Origin:", req.headers.origin);
   next();
 });
 
+app.use(express.json());
 
 const allowedOrigins = (process.env.CORS_ORIGIN ?? "")
   .split(",")
@@ -53,16 +55,15 @@ const corsOptions: cors.CorsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(express.json());
+
 
 app.get("/api/version", (_req, res) => {
   res.json({ version: "v1-cors-check", time: Date.now() });
 });
 
 
-app.use("/api/meta", metaRoute);
-
 // ROUTES
+app.use("/api/meta", metaRoute);
 app.use('/api/autos', autosRoute);
 app.use('/api/maintenance', maintenanceRoute);
 app.use('/api/parts', partsRoute);
@@ -73,17 +74,17 @@ app.use('/api/users', usersRoute);
 // app.use('/api/service-logs', serviceLogRoute);
 app.use('/api/service-types', serviceTypeRoute)
 app.use('/api/health', healthRoute);
-app.use('/api/auth', cors(corsOptions), authRoute);
+app.use('/api/auth', authRoute);
 console.log("AUTH ROUTES MOUNTED AT /api/auth")
 
-const PORT = Number(process.env.PORT) || 3000;
+
 
 app.use((err: any, _req: any, res: any, _next: any) => {
   console.error("UNHANDLED ERROR:", err);
   res.status(500).send("Internal Server Error");
 });
 
-
+const PORT = Number(process.env.PORT) || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
