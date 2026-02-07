@@ -2,10 +2,14 @@
 import axios from "axios";
 import { clearToken } from "../auth/auth";
 
+const rawBase = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+
+const API_BASE = rawBase.replace(/\/$/, "") + "/api";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
+  baseURL: API_BASE,
 });
+;
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
