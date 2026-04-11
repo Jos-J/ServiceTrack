@@ -11,7 +11,7 @@ import partsRoute from './routes/parts.route.js';
 import vehicleHistoryRoute from './routes/vehiclehistory.route.js';
 import usersRoute from './routes/users.route.js';
 // import techniciansRoute from './routes/technicians.route';
- import shopRoute from './routes/shop.route.js';
+import shopRoute from './routes/shop.route.js';
 // import serviceLogRoute from './routes/serviceLog.route';
 import healthRoute from './routes/health.route.js';
 import authRoute from './routes/auth.route.js';
