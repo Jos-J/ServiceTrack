@@ -239,6 +239,13 @@ export interface ShopCreateRequest {
   address?: string;
 }
 
+export interface ShopUpdateRequest {
+  shop_name: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+}
+
 export type ShopResponse = ApiResponse<Shop>;
 
 // 7. Suppliers

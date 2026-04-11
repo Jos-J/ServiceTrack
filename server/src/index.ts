@@ -11,7 +11,7 @@ import partsRoute from './routes/parts.route.js';
 import vehicleHistoryRoute from './routes/vehiclehistory.route.js';
 import usersRoute from './routes/users.route.js';
 // import techniciansRoute from './routes/technicians.route';
-// import shopRoute from './routes/shop.route';
+ import shopRoute from './routes/shop.route.js';
 // import serviceLogRoute from './routes/serviceLog.route';
 import healthRoute from './routes/health.route.js';
 import authRoute from './routes/auth.route.js';
@@ -59,7 +59,7 @@ app.use('/api/parts', partsRoute);
 app.use('/api/vehicle-history', vehicleHistoryRoute);
 app.use('/api/users', usersRoute);
 // app.use('/api/technicians', techniciansRoute);
-// app.use('/api/shops', shopRoute);
+ app.use('/api/shops', shopRoute);
 // app.use('/api/service-logs', serviceLogRoute);
 app.use('/api/service-types', serviceTypeRoute)
 app.use('/api/health', healthRoute);
